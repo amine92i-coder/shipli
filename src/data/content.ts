@@ -1,0 +1,378 @@
+export const CONTACT = {
+  email: 'contact@shipli.co',
+  moroccoPhone: '+212 679-930096',
+  chinaPhone: '+86 198 1771 4120',
+  hours: 'Monday to Saturday — business hours. Sunday closed.',
+  cities: 'Casablanca / Guangzhou',
+} as const;
+
+export const NAV: {
+  label: string;
+  to: string;
+  children?: { label: string; to: string; blurb: string }[];
+}[] = [
+  {
+    label: 'About us',
+    to: '/about',
+    children: [
+      {
+        label: 'Business highlights',
+        to: '/about#highlights',
+        blurb: 'The numbers and milestones behind five years of Morocco–China trade.',
+      },
+      {
+        label: 'Our strategy',
+        to: '/about#strategy',
+        blurb: 'Why we own every link of the chain instead of brokering it.',
+      },
+      {
+        label: 'Management philosophy',
+        to: '/about#philosophy',
+        blurb: 'How we make decisions when your money is in transit.',
+      },
+    ],
+  },
+  {
+    label: 'Solutions',
+    to: '/solutions',
+    children: [
+      {
+        label: 'Sourcing',
+        to: '/solutions#sourcing',
+        blurb: 'Direct factory access, inspection, freight, customs and delivery.',
+      },
+      {
+        label: 'Sourcing with personalized brand',
+        to: '/solutions#branded',
+        blurb: 'Private labelling, custom packaging and product customisation.',
+      },
+    ],
+  },
+  { label: 'Contact', to: '/contact' },
+  {
+    label: 'Resources',
+    to: '/resources',
+    children: [
+      { label: 'Blog', to: '/blog', blurb: 'Field notes on importing from China into Morocco.' },
+      { label: 'Gallery', to: '/gallery', blurb: 'Factories, containers and projects we have moved.' },
+      { label: 'FAQ', to: '/faq', blurb: 'Duties, timelines, minimums and payment protection.' },
+    ],
+  },
+  { label: 'Careers', to: '/careers' },
+];
+
+export const HERO = {
+  eyebrow: 'China sourcing · Full control',
+  headlineTop: 'Cut the',
+  headlineMark: 'Agent,',
+  headlineBottom: 'Not the Control.',
+  sub: 'Morocco ↔ China — one company, full control, start to finish. We buy at the factory gate, ship as an authorised carrier partner, clear Moroccan customs ourselves and deliver to your door.',
+  primary: 'Start sourcing',
+  secondary: 'Talk to us',
+  assurance: 'Two contracts. Two countries. One company.',
+} as const;
+
+export const STATS = [
+  { value: '5+', label: 'Years of trusted trade' },
+  { value: '2', label: 'Offices — Morocco & China' },
+  { value: '100%', label: 'Customs cleared in-house' },
+  { value: '0', label: 'Agents in the chain' },
+] as const;
+
+export const PARTNERS = [
+  { name: 'MSC', src: '/images/partners/partner-5.png' },
+  { name: 'China Cargo Airlines', src: '/images/partners/partner-3.png' },
+  { name: 'China Post', src: '/images/partners/partner-4.png' },
+  { name: 'RONGTA', src: '/images/partners/partner-1.png' },
+  { name: 'WEIRONG', src: '/images/partners/partner-7.png' },
+  { name: 'WAM Morocco', src: '/images/partners/partner-2.png' },
+  { name: 'GITEX Africa Morocco', src: '/images/partners/partner-6.png' },
+] as const;
+
+export const ADVANTAGES = [
+  {
+    title: 'Factories no outsider can reach',
+    body: 'Direct relationships in China, not a supplier directory. We negotiate the local price, not the price quoted to a foreigner.',
+    icon: 'factory',
+  },
+  {
+    title: 'We buy in China, ourselves',
+    body: "SHIPLI purchases directly from the manufacturer as buyer of record, removing the agent's margin from your price.",
+    icon: 'boxes',
+  },
+  {
+    title: 'Direct partnerships with major shipping lines',
+    body: 'We work as an authorised agent of major sea and air carriers. No external shipping company added.',
+    icon: 'ship',
+  },
+  {
+    title: 'Customs clearance, only through SHIPLI',
+    body: 'All Moroccan customs clearance is handled by SHIPLI directly, never outsourced.',
+    icon: 'clipboard',
+  },
+  {
+    title: 'Delivery through our own logistics network',
+    body: 'Once cleared, goods move through our own logistics solution in Morocco, all the way to your door.',
+    icon: 'truck',
+  },
+] as const;
+
+export const PROCESS = [
+  { title: 'Submit a sourcing request', body: 'Tell us what you need: specs, goals and budget.', icon: 'clipboard' },
+  { title: 'Factory matching', body: 'We connect you with vetted, direct factory partners in China.', icon: 'factory' },
+  { title: 'Legal contract in Morocco', body: 'Signed and binding before anything moves.', icon: 'file' },
+  { title: 'Legal contract in China', body: 'Signed directly with the factory, under Chinese law.', icon: 'scale' },
+  {
+    title: 'Production & inspection',
+    body: 'We manage manufacturing and quality checks, and keep you updated at every stage.',
+    icon: 'badge',
+  },
+  {
+    title: 'Shipping, customs & delivery',
+    body: 'Shipped as an authorised carrier partner, cleared through SHIPLI in Morocco, delivered through our own network.',
+    icon: 'package',
+  },
+] as const;
+
+export const SERVICES = [
+  {
+    id: 'sourcing',
+    title: 'Product sourcing',
+    short: 'Find trusted manufacturers and high-quality products directly from China.',
+    body: 'We source high-quality products from trusted manufacturers, carefully verifying every supplier to ensure reliability, competitive pricing and consistent quality. Our sourcing process helps you save time, reduce costs and avoid scams, giving you complete confidence in every purchase.',
+    icon: 'factory',
+  },
+  {
+    id: 'freight',
+    title: 'International freight',
+    short: 'Reliable international shipping solutions by sea and air.',
+    body: 'Transport your goods from China to Morocco with our reliable air freight and sea freight solutions. We ensure safe handling, competitive shipping rates, real-time tracking and on-time delivery for businesses of all sizes.',
+    icon: 'ship',
+  },
+  {
+    id: 'customs',
+    title: 'Customs clearance',
+    short: 'Efficient customs processing for smooth, compliant imports.',
+    body: 'Our experienced team manages every aspect of the customs clearance process, including import documentation, customs declarations, duties and regulatory compliance. We help minimise delays and ensure your shipments are cleared quickly.',
+    icon: 'clipboard',
+  },
+  {
+    id: 'ddp',
+    title: 'Sourcing & DDP delivery',
+    short: 'End-to-end sourcing with door-to-door delivery under DDP terms.',
+    body: 'Simplify your imports with our complete Sourcing & DDP (Delivered Duty Paid) service. From finding reliable suppliers and inspecting products to customs clearance and door-to-door delivery, we handle the entire process so you can focus on growing your business.',
+    icon: 'truck',
+  },
+  {
+    id: 'branded',
+    title: 'Branding & private label',
+    short: 'Build your brand with custom packaging and private labelling.',
+    body: 'Strengthen your business identity with our professional branding solutions, including private labelling, custom packaging, logo printing and product customisation. We help you create a unique brand that stands out in a competitive marketplace.',
+    icon: 'badge',
+  },
+  {
+    id: 'setup',
+    title: 'Business setup in China',
+    short: 'Professional support for establishing your company in China.',
+    body: 'We help entrepreneurs and businesses establish their presence in China with a complete company setup service. From registration and legal procedures to documentation, local support and operational guidance, we handle every step from A to Z.',
+    icon: 'building',
+  },
+] as const;
+
+export const CATEGORIES = [
+  { title: 'Industrial equipment', note: 'Machines, production lines, spare parts', tone: 'sea' },
+  { title: 'Textiles & furniture', note: 'Villas, offices, hotels, retail fit-outs', tone: 'sand' },
+  { title: 'Packaging & electronics', note: 'Private label, POS hardware, components', tone: 'mist' },
+] as const;
+
+export const WHY = [
+  { title: 'Verified suppliers', body: 'Protection against supplier scams through careful verification and due diligence.' },
+  { title: 'China & Morocco offices', body: 'Local support with faster communication and personalised assistance.' },
+  { title: 'End-to-end logistics', body: 'From sourcing to customs clearance and final delivery.' },
+  { title: 'Quality inspection', body: 'Every shipment is inspected before departure to ensure quality.' },
+  { title: 'Transparent pricing', body: 'No hidden fees. Clear quotations and complete cost visibility.' },
+  { title: 'Dedicated support', body: 'Our multilingual team is available throughout your shipment journey.' },
+] as const;
+
+export const FAQS = [
+  {
+    q: 'How is SHIPLI different from a sourcing agent?',
+    a: 'We do not hand your order to an agent or broker. SHIPLI operates through its own teams in Morocco and China, buys directly from the manufacturer, and remains responsible for sourcing, contracts, shipping, customs and delivery.',
+  },
+  {
+    q: 'How does the contract protect my payment?',
+    a: 'Before anything moves, SHIPLI signs a legally binding contract with you in Morocco, drafted by our own lawyers. Our Moroccan company is responsible for your product and your money throughout the journey.',
+  },
+  {
+    q: 'How can I avoid scams when buying from foreign suppliers?',
+    a: "If you work with us, we take care of everything. We protect you and your money — you either receive your goods or you get your money back.",
+  },
+  {
+    q: 'Do you offer DDP shipping to Morocco?',
+    a: 'Yes. We can handle every aspect of the import process, from the factory floor in China to your warehouse in Morocco, duties included.',
+  },
+  {
+    q: 'How long does international shipping usually take?',
+    a: 'From China to Morocco, shipping typically takes about 2 weeks by air including customs clearance, or about 2 months by sea. We share a clear timeline before you commit.',
+  },
+  {
+    q: 'How much do customs duties and taxes cost in Morocco?',
+    a: 'It depends on the product, but they generally range from 22% to 75%. We calculate the landed cost before you commit so there are no surprises.',
+  },
+  {
+    q: 'What product categories do you source?',
+    a: 'Our sourcing desk is built for industrial equipment, textiles, furniture, packaging, electronics and other made-to-spec products. Tell us what you need and we will confirm fit.',
+  },
+  {
+    q: 'What is the minimum order size you work with?',
+    a: 'We assess each request on its product, complexity and shipping profile rather than applying a one-size-fits-all number. Start with your specifications and budget.',
+  },
+  {
+    q: 'Can you handle shipping only?',
+    a: 'Yes. We can ship almost any commodity from China or Morocco to any country, even when you have already found your own supplier.',
+  },
+] as const;
+
+export const GALLERY = [
+  { src: '/images/gallery/gallery-1.jpg', caption: 'Container loaded and ready to seal' },
+  { src: '/images/gallery/gallery-2.jpg', caption: 'Loading cartons at the warehouse' },
+  { src: '/images/gallery/gallery-3.jpg', caption: 'China auto parts fair, Hangzhou' },
+  { src: '/images/gallery/gallery-4.jpg', caption: 'Meeting a supplier at the fair' },
+  { src: '/images/gallery/gallery-5.jpg', caption: 'Palletised and labelled for export' },
+  { src: '/images/gallery/gallery-6.jpg', caption: 'Agricultural machinery at the factory' },
+  { src: '/images/gallery/gallery-7.jpg', caption: 'Private-label webbing on the line' },
+  { src: '/images/gallery/gallery-8.jpg', caption: 'Digital textile printing line' },
+] as const;
+
+export const HIGHLIGHTS = [
+  {
+    value: '5+',
+    title: 'Years of trusted trade',
+    body: 'Five years moving goods between Chinese factories and Moroccan businesses, without a single order handed to a broker.',
+  },
+  {
+    value: '2',
+    title: 'Legal entities, two jurisdictions',
+    body: 'A Moroccan company that contracts with you and a Chinese company that contracts with the factory — the only structure enforceable on both ends.',
+  },
+  {
+    value: '6',
+    title: 'Service lines under one roof',
+    body: 'Sourcing, freight, customs, DDP, branding and company formation, all delivered by SHIPLI teams rather than subcontractors.',
+  },
+  {
+    value: '7',
+    title: 'Named partners and carriers',
+    body: 'From MSC and China Cargo Airlines to manufacturers such as RONGTA and WEIRONG, plus a presence at WAM and GITEX Africa Morocco.',
+  },
+] as const;
+
+export const STRATEGY = [
+  {
+    title: 'Own the chain, do not broker it',
+    body: 'Every step where other companies hand off to an outside party, we keep in-house. Buying, shipping, clearing and delivering are all SHIPLI operations, which is the only way to hold a price and a deadline.',
+  },
+  {
+    title: 'Buy at the factory gate',
+    body: 'We purchase as buyer of record in China at the local price. The agent margin that normally sits invisibly in your quotation simply does not exist in ours.',
+  },
+  {
+    title: 'Contract on both ends',
+    body: 'A binding contract in Morocco makes us answerable to you under Moroccan law. A second contract in China makes the factory answerable to us under Chinese law.',
+  },
+  {
+    title: 'Be physically present',
+    body: 'Our Morocco team manages your brief, contract, clearance and delivery. Our China team walks the factory floor, where the decisions actually get made.',
+  },
+] as const;
+
+export const PHILOSOPHY = [
+  {
+    title: 'The client worries about two things only',
+    body: 'Receiving the product, and their money. Everything between those two points is our problem, not yours.',
+  },
+  {
+    title: 'Transparency is a deliverable',
+    body: 'Clear quotations, complete cost visibility and no hidden fees. If a cost changes, you hear it from us before it reaches your invoice.',
+  },
+  {
+    title: 'Say no to the wrong order',
+    body: 'If a product, a factory or a timeline does not hold up to inspection, we say so early. A lost order costs us less than a failed shipment costs you.',
+  },
+  {
+    title: 'Decisions travel with the goods',
+    body: 'Whoever is closest to the shipment has the authority to act on it. That is why we staff both ends rather than managing China from a desk in Casablanca.',
+  },
+] as const;
+
+export const BLOG_POSTS = [
+  {
+    slug: 'landed-cost-morocco',
+    title: 'What importing from China actually costs in Morocco',
+    excerpt:
+      'Duties in Morocco range from roughly 22% to 75% depending on the HS code. Here is how to model the landed cost before you commit to an order.',
+    tag: 'Customs',
+    read: '6 min read',
+    date: '2026-07-28',
+  },
+  {
+    slug: 'sea-vs-air-china-morocco',
+    title: 'Sea or air: choosing a route from Guangzhou to Casablanca',
+    excerpt:
+      'Two weeks by air including clearance, roughly two months by sea. The right answer depends on your margin, not on the freight quote.',
+    tag: 'Freight',
+    read: '5 min read',
+    date: '2026-07-14',
+  },
+  {
+    slug: 'supplier-scams',
+    title: 'Six ways importers lose money to suppliers, and how to close each one',
+    excerpt:
+      'Deposit fraud, spec drift, quiet material substitution. Each has a documented countermeasure, and most of them happen before production starts.',
+    tag: 'Risk',
+    read: '8 min read',
+    date: '2026-06-30',
+  },
+  {
+    slug: 'private-label-basics',
+    title: 'Private label from a Chinese factory without owning a factory',
+    excerpt:
+      'Custom packaging, logo printing and product customisation are usually available well below the minimums importers assume.',
+    tag: 'Branding',
+    read: '4 min read',
+    date: '2026-06-12',
+  },
+];
+
+export const JOBS = [
+  {
+    title: 'Sourcing Specialist',
+    location: 'Guangzhou, China',
+    type: 'Full-time',
+    body: 'Walk factory floors, negotiate in Mandarin, and hold suppliers to the specification our clients signed for.',
+  },
+  {
+    title: 'Customs & Compliance Officer',
+    location: 'Casablanca, Morocco',
+    type: 'Full-time',
+    body: 'Own the declaration end to end: classification, documentation and clearance through Moroccan customs.',
+  },
+  {
+    title: 'Logistics Coordinator',
+    location: 'Casablanca, Morocco',
+    type: 'Full-time',
+    body: 'Coordinate sea and air movements with our carrier partners and run the last mile across Morocco.',
+  },
+  {
+    title: 'Quality Inspector',
+    location: 'China — travel required',
+    type: 'Full-time',
+    body: 'Inspect before departure. Photograph, measure, and refuse what does not match the contract.',
+  },
+  {
+    title: 'Brand & Marketing Coordinator',
+    location: 'Casablanca, Morocco',
+    type: 'Full-time',
+    body: 'Tell the SHIPLI story to Moroccan businesses across channels, campaigns and client case studies.',
+  },
+];
