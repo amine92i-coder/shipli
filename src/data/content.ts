@@ -3,8 +3,32 @@ export const CONTACT = {
   moroccoPhone: '+212 679-930096',
   chinaPhone: '+86 198 1771 4120',
   hours: 'Monday to Saturday — business hours. Sunday closed.',
-  cities: 'Casablanca / Guangzhou',
+  cities: 'Ben Guerir / Hangzhou',
+  moroccoAddress: 'STE SHIPLI NR 13 8D MOHAMEO VI, HAY EL MASSIRA EL KHADRA 20100 BEN GUERIR MAROC',
+  chinaAddress: '中国浙江省杭州市拱墅区石祥路525号 邮政编码: 310011.SHIPLI',
 } as const;
+
+/** WhatsApp uses the Morocco line; digits only, no plus sign. */
+export const WHATSAPP = {
+  number: '212679930096',
+  message: 'Hello SHIPLI, I would like to source a product from China.',
+} as const;
+
+/**
+ * Taken from the SHIPLI Linktree (linktr.ee/Shipli.co). Only these four
+ * networks are actually published there — there is no TikTok or YouTube
+ * account, so none is linked.
+ *
+ * The Linktree's own WhatsApp link carries a leading zero after the country
+ * code (2120679930096), which is not valid E.164. We use the corrected form.
+ */
+export const SOCIALS = [
+  { label: 'WhatsApp', href: `https://wa.me/${WHATSAPP.number}`, icon: 'whatsapp' },
+  { label: 'Instagram', href: 'https://www.instagram.com/Shipli_co', icon: 'instagram' },
+  { label: 'Facebook', href: 'https://www.facebook.com/profile.php?id=61574671934137', icon: 'facebook' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/shipli', icon: 'linkedin' },
+  { label: 'Email', href: `mailto:${CONTACT.email}`, icon: 'mail' },
+] as const;
 
 export const NAV: {
   label: string;
@@ -46,6 +70,11 @@ export const NAV: {
         to: '/solutions#branded',
         blurb: 'Private labelling, custom packaging and product customisation.',
       },
+      {
+        label: 'Landed cost calculator',
+        to: '/calculator',
+        blurb: 'Goods, freight, duty, VAT and our fee — what an order really costs delivered.',
+      },
     ],
   },
   { label: 'Contact', to: '/contact' },
@@ -63,30 +92,25 @@ export const NAV: {
 
 export const HERO = {
   eyebrow: 'China sourcing · Full control',
-  headlineTop: 'Cut the',
-  headlineMark: 'Agent,',
-  headlineBottom: 'Not the Control.',
-  sub: 'Morocco ↔ China — one company, full control, start to finish. We buy at the factory gate, ship as an authorised carrier partner, clear Moroccan customs ourselves and deliver to your door.',
+  /** Two parallel clauses, each with its own marked phrase. */
+  lineOneLead: 'We Control the',
+  lineOneMark: 'sourcing chain.',
+  lineTwoLead: 'You Control the',
+  lineTwoMark: 'pricing Market.',
+  sub: "Morocco ↔ China, one company, full control, start to finish — because when nothing gets outsourced, nothing gets marked up. That's how you control the market with our pricing.",
   primary: 'Start sourcing',
   secondary: 'Talk to us',
   assurance: 'Two contracts. Two countries. One company.',
 } as const;
 
-export const STATS = [
-  { value: '5+', label: 'Years of trusted trade' },
-  { value: '2', label: 'Offices — Morocco & China' },
-  { value: '100%', label: 'Customs cleared in-house' },
-  { value: '0', label: 'Agents in the chain' },
-] as const;
-
 export const PARTNERS = [
-  { name: 'MSC', src: '/images/partners/partner-5.png' },
-  { name: 'China Cargo Airlines', src: '/images/partners/partner-3.png' },
-  { name: 'China Post', src: '/images/partners/partner-4.png' },
-  { name: 'RONGTA', src: '/images/partners/partner-1.png' },
-  { name: 'WEIRONG', src: '/images/partners/partner-7.png' },
-  { name: 'WAM Morocco', src: '/images/partners/partner-2.png' },
-  { name: 'GITEX Africa Morocco', src: '/images/partners/partner-6.png' },
+  { name: 'MSC', src: '/images/partners/partner-5.jpg' },
+  { name: 'China Cargo Airlines', src: '/images/partners/partner-3.jpg' },
+  { name: 'China Post', src: '/images/partners/partner-4.jpg' },
+  { name: 'RONGTA', src: '/images/partners/partner-1.jpg' },
+  { name: 'WEIRONG', src: '/images/partners/partner-7.jpg' },
+  { name: 'WAM Morocco', src: '/images/partners/partner-2.jpg' },
+  { name: 'GITEX Africa Morocco', src: '/images/partners/partner-6.jpg' },
 ] as const;
 
 export const ADVANTAGES = [
@@ -180,9 +204,31 @@ export const SERVICES = [
 ] as const;
 
 export const CATEGORIES = [
-  { title: 'Industrial equipment', note: 'Machines, production lines, spare parts', tone: 'sea' },
-  { title: 'Textiles & furniture', note: 'Villas, offices, hotels, retail fit-outs', tone: 'sand' },
-  { title: 'Packaging & electronics', note: 'Private label, POS hardware, components', tone: 'mist' },
+  {
+    title: 'Construction & manufacturing solutions',
+    note: 'Machines, production lines, site equipment and spare parts',
+    tone: 'sea',
+  },
+  {
+    title: 'Agriculture solutions',
+    note: 'Irrigation, greenhouses, tractors and processing equipment',
+    tone: 'kelp',
+  },
+  {
+    title: 'Electronics & technical products',
+    note: 'POS hardware, components, instruments and control systems',
+    tone: 'mist',
+  },
+  {
+    title: 'Raw materials for factories',
+    note: 'Polymers, metals, chemicals, fabrics and packaging stock',
+    tone: 'sand',
+  },
+  {
+    title: 'Textile & furniture',
+    note: 'Villas, offices, hotels and retail fit-outs',
+    tone: 'deep',
+  },
 ] as const;
 
 export const WHY = [
@@ -233,15 +279,31 @@ export const FAQS = [
   },
 ] as const;
 
+/**
+ * Real shipment and supplier-visit photographs. Intrinsic w/h are carried so
+ * the masonry gallery can reserve space before the image loads — most of these
+ * are portrait, which makes layout shift very visible otherwise.
+ * The first eight double as the homepage teaser strip.
+ */
 export const GALLERY = [
-  { src: '/images/gallery/gallery-1.jpg', caption: 'Container loaded and ready to seal' },
-  { src: '/images/gallery/gallery-2.jpg', caption: 'Loading cartons at the warehouse' },
-  { src: '/images/gallery/gallery-3.jpg', caption: 'China auto parts fair, Hangzhou' },
-  { src: '/images/gallery/gallery-4.jpg', caption: 'Meeting a supplier at the fair' },
-  { src: '/images/gallery/gallery-5.jpg', caption: 'Palletised and labelled for export' },
-  { src: '/images/gallery/gallery-6.jpg', caption: 'Agricultural machinery at the factory' },
-  { src: '/images/gallery/gallery-7.jpg', caption: 'Private-label webbing on the line' },
-  { src: '/images/gallery/gallery-8.jpg', caption: 'Digital textile printing line' },
+  { src: '/images/gallery/gallery-1.jpg', caption: 'Cartons loaded and stacked for export', w: 736, h: 981 },
+  { src: '/images/gallery/gallery-13.jpg', caption: 'Bales packed wall to wall for a full container', w: 1200, h: 1600 },
+  { src: '/images/gallery/gallery-3.jpg', caption: 'Excavator secured inside the container', w: 736, h: 981 },
+  { src: '/images/gallery/gallery-5.jpg', caption: 'Agricultural machinery at a supplier visit', w: 1600, h: 1200 },
+  { src: '/images/gallery/gallery-17.jpg', caption: 'Wheel loaders on the trailer to the port', w: 736, h: 981 },
+  { src: '/images/gallery/gallery-9.jpg', caption: 'Reviewing specifications with a manufacturer', w: 900, h: 1600 },
+  { src: '/images/gallery/gallery-18.jpg', caption: 'Textile bales loaded for Morocco', w: 736, h: 981 },
+  { src: '/images/gallery/gallery-12.jpg', caption: 'Container sealed with the supplier team', w: 1200, h: 1600 },
+  { src: '/images/gallery/gallery-2.jpg', caption: 'Forklift filling the container, Hangzhou', w: 736, h: 736 },
+  { src: '/images/gallery/gallery-4.jpg', caption: 'Heavy machine blocked and braced for sea freight', w: 736, h: 1308 },
+  { src: '/images/gallery/gallery-6.jpg', caption: 'Industrial equipment at the China trade fair', w: 1600, h: 1200 },
+  { src: '/images/gallery/gallery-7.jpg', caption: 'On the floor at the equipment expo', w: 900, h: 1600 },
+  { src: '/images/gallery/gallery-8.jpg', caption: 'Walking the halls to shortlist suppliers', w: 900, h: 1600 },
+  { src: '/images/gallery/gallery-10.jpg', caption: 'Inspecting excavators before purchase', w: 900, h: 1600 },
+  { src: '/images/gallery/gallery-11.jpg', caption: 'Wheel loader checked at the supplier yard', w: 900, h: 1600 },
+  { src: '/images/gallery/gallery-14.jpg', caption: 'Final count before the doors close', w: 1200, h: 1600 },
+  { src: '/images/gallery/gallery-15.jpg', caption: 'Machinery inspection at the China yard', w: 1600, h: 1200 },
+  { src: '/images/gallery/gallery-16.jpg', caption: 'Supplier meeting at the trade fair', w: 1200, h: 1600 },
 ] as const;
 
 export const HIGHLIGHTS = [

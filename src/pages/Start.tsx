@@ -4,6 +4,25 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Paperclip, Send } from 'luc
 import { Link } from 'react-router-dom';
 import { CONTACT } from '@/data/content';
 
+/** The three stages your brief passes through, in our own photographs. */
+const BRIEF_STEPS = [
+  {
+    src: '/images/gallery/gallery-16.jpg',
+    label: 'We meet the maker',
+    alt: 'SHIPLI meeting a manufacturer at a trade fair in China',
+  },
+  {
+    src: '/images/gallery/gallery-10.jpg',
+    label: 'We inspect it',
+    alt: 'Inspecting excavators at a supplier yard before purchase',
+  },
+  {
+    src: '/images/gallery/gallery-14.jpg',
+    label: 'We load it',
+    alt: 'Counting goods inside the container before the doors are closed',
+  },
+] as const;
+
 type FieldType = 'radio' | 'checkbox' | 'text' | 'textarea' | 'email' | 'tel' | 'number' | 'date' | 'file';
 
 type Field = {
@@ -349,6 +368,25 @@ export default function Start() {
         <p className="mt-4 max-w-xl text-sm leading-7 text-mist/70">
           A few short steps. Every answer changes the questions that follow, so you only fill what applies to you.
         </p>
+
+        {/* What actually happens to the brief once it is sent — real photographs
+            rather than a promise, sitting above the first question. */}
+        <ul className="mt-9 grid grid-cols-3 gap-2.5 sm:gap-3">
+          {BRIEF_STEPS.map((shot, i) => (
+            <li key={shot.src} className="group relative overflow-hidden rounded-2xl border border-white/10">
+              <img
+                src={shot.src}
+                alt={shot.alt}
+                loading={i === 0 ? undefined : 'lazy'}
+                className="aspect-[4/5] w-full object-cover opacity-70 transition duration-700 group-hover:scale-105 group-hover:opacity-100 sm:aspect-[4/3]"
+              />
+              <span className="absolute inset-0 bg-gradient-to-t from-abyss via-abyss/25 to-transparent" />
+              <span className="absolute inset-x-0 bottom-0 p-3 font-mono text-[9px] uppercase leading-4 tracking-[0.14em] text-mist/85 sm:text-[10px]">
+                {shot.label}
+              </span>
+            </li>
+          ))}
+        </ul>
 
         <div className="mt-10 flex items-center gap-4">
           <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.12]">

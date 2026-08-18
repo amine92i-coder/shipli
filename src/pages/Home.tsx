@@ -15,8 +15,8 @@ export default function Home() {
     <>
       <Hero />
       <Partners />
-      <Advantage />
       <VideoBlock />
+      <Advantage />
       <Trust />
       <Presence />
       <Categories />

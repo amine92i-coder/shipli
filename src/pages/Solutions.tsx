@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, Check } from 'lucide-react';
+import { ArrowUpRight, Calculator, Check } from 'lucide-react';
 import { SERVICES } from '@/data/content';
 import { Icon, PageHeader, Reveal, SectionLabel } from '@/components/ui';
 import { Process } from '@/components/sections/Process';
@@ -93,6 +93,34 @@ export default function Solutions() {
                 className="aspect-[4/5] w-full object-cover"
               />
             </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* A tool, not a third solution — so it gets a band rather than its own
+          numbered section, sitting where the price question naturally lands. */}
+      <section className="relative overflow-hidden bg-abyss py-16 text-shell sm:py-20">
+        <div className="grid-lines absolute inset-0 opacity-[0.08]" />
+        <div className="absolute -right-24 -top-20 h-72 w-72 rounded-full bg-sea/30 blur-[110px]" />
+        <div className="shell relative flex flex-col justify-between gap-8 lg:flex-row lg:items-center">
+          <Reveal>
+            <SectionLabel tone="light">Before you commit</SectionLabel>
+            <h2 className="display mt-4 max-w-lg text-3xl text-shell sm:text-4xl">
+              See the landed cost, not just the factory price
+            </h2>
+            <p className="mt-5 max-w-lg text-sm leading-7 text-mist/75">
+              Goods, freight, duty, VAT and our fee — itemised, in USD and dirhams, before a single carton moves.
+            </p>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <Link
+              to="/calculator"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-coral px-6 py-3.5 text-sm font-bold text-abyss transition duration-300 hover:-translate-y-0.5"
+              data-testid="link-solutions-calculator"
+            >
+              <Calculator size={16} />
+              Open the calculator
+            </Link>
           </Reveal>
         </div>
       </section>

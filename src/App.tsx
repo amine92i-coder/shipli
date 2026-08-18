@@ -2,9 +2,11 @@ import { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
+import { WhatsAppButton } from './components/WhatsAppButton';
 import Home from './pages/Home';
 import About from './pages/About';
 import Solutions from './pages/Solutions';
+import Calculator from './pages/Calculator';
 import Contact from './pages/Contact';
 import Resources from './pages/Resources';
 import Blog from './pages/Blog';
@@ -29,6 +31,12 @@ function ScrollManager() {
   return null;
 }
 
+/** Everywhere except the sourcing form, where it would sit over the fields. */
+function FloatingChat() {
+  const { pathname } = useLocation();
+  return pathname === '/start' ? null : <WhatsAppButton />;
+}
+
 export default function App() {
   return (
     <div className="grain relative min-h-svh overflow-x-clip">
@@ -39,6 +47,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/solutions" element={<Solutions />} />
+          <Route path="/calculator" element={<Calculator />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/blog" element={<Blog />} />
@@ -50,6 +59,7 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
+      <FloatingChat />
     </div>
   );
 }

@@ -1,13 +1,16 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight, Boxes, Factory, PackageCheck } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Boxes, Cpu, HardHat, Layers, Sofa, Sprout } from 'lucide-react';
 import { CATEGORIES } from '@/data/content';
 import { Reveal, SectionLabel } from '../ui';
 
-const ICONS = [Factory, Boxes, PackageCheck];
+/** Positional — one icon per entry in CATEGORIES, in the same order. */
+const ICONS = [HardHat, Sprout, Cpu, Layers, Sofa];
 const TONES: Record<string, string> = {
   sea: 'bg-sea text-white',
-  sand: 'bg-sand text-abyss',
+  kelp: 'bg-kelp text-white',
   mist: 'bg-mist text-abyss',
+  sand: 'bg-sand text-abyss',
+  deep: 'bg-deep text-white',
 };
 
 export function Categories() {
@@ -28,7 +31,9 @@ export function Categories() {
           </div>
         </Reveal>
 
-        <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Five categories plus the "Something specific?" card = six, so three
+            across gives two full rows with no orphan. */}
+        <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {CATEGORIES.map((category, index) => {
             const CategoryIcon = ICONS[index] ?? Boxes;
             return (
@@ -52,7 +57,7 @@ export function Categories() {
             );
           })}
 
-          <Reveal delay={0.24}>
+          <Reveal delay={CATEGORIES.length * 0.08}>
             <div className="flex min-h-[240px] flex-col justify-between rounded-3xl border border-dashed border-sea/35 bg-white p-7">
               <div>
                 <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-sea">Your category</span>

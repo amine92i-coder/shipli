@@ -1,7 +1,16 @@
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, Mail, MapPin, Phone } from 'lucide-react';
-import { CONTACT, NAV } from '@/data/content';
+import { ArrowUpRight, Facebook, Instagram, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
+import { CONTACT, NAV, SOCIALS } from '@/data/content';
 import { Logo } from './Logo';
+import { WhatsAppIcon } from './WhatsAppButton';
+
+const SOCIAL_ICONS: Record<string, (props: { size?: number }) => JSX.Element> = {
+  whatsapp: (p) => <WhatsAppIcon size={p.size} />,
+  instagram: (p) => <Instagram size={p.size} />,
+  facebook: (p) => <Facebook size={p.size} />,
+  linkedin: (p) => <Linkedin size={p.size} />,
+  mail: (p) => <Mail size={p.size} />,
+};
 
 export function Footer() {
   return (
@@ -21,6 +30,26 @@ export function Footer() {
               Start sourcing
               <ArrowUpRight size={15} />
             </Link>
+
+            <ul className="mt-8 flex flex-wrap items-center gap-2.5" data-testid="footer-socials">
+              {SOCIALS.map((social) => {
+                const Icon = SOCIAL_ICONS[social.icon];
+                return (
+                  <li key={social.label}>
+                    <a
+                      href={social.href}
+                      target={social.href.startsWith('mailto:') ? undefined : '_blank'}
+                      rel="noopener noreferrer"
+                      aria-label={social.label}
+                      title={social.label}
+                      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-mist/75 transition duration-300 hover:-translate-y-0.5 hover:border-sky/60 hover:bg-white/10 hover:text-white"
+                    >
+                      <Icon size={17} />
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
 
           <div className="grid gap-10 sm:grid-cols-3">
@@ -67,7 +96,17 @@ export function Footer() {
                 </li>
                 <li className="flex items-start gap-2.5">
                   <MapPin size={15} className="mt-0.5 shrink-0 text-sky" />
-                  {CONTACT.cities}
+                  <address className="text-xs not-italic leading-6">
+                    {CONTACT.moroccoAddress}
+                    <span className="mt-1 block font-mono text-[10px] tracking-[0.12em] text-mist/50">MOROCCO</span>
+                  </address>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <MapPin size={15} className="mt-0.5 shrink-0 text-sky" />
+                  <address className="text-xs not-italic leading-6">
+                    {CONTACT.chinaAddress}
+                    <span className="mt-1 block font-mono text-[10px] tracking-[0.12em] text-mist/50">CHINA</span>
+                  </address>
                 </li>
               </ul>
             </div>

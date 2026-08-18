@@ -26,6 +26,22 @@ export function Advantage() {
               Source now
               <ArrowUpRight size={16} />
             </Link>
+
+            {/* Balances the six-row list opposite. Hidden below lg, where the
+                columns stack and this would only push the list further down. */}
+            <figure className="relative mt-10 hidden overflow-hidden rounded-3xl lg:block">
+              <img
+                src="/images/gallery/gallery-2.jpg"
+                alt="A forklift loading cartons into a container at the Hangzhou warehouse"
+                loading="lazy"
+                width={736}
+                height={736}
+                className="aspect-[4/3] w-full object-cover"
+              />
+              <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-abyss/85 to-transparent p-5 font-mono text-[10px] uppercase tracking-[0.16em] text-shell">
+                Our own team loading, Hangzhou
+              </figcaption>
+            </figure>
           </Reveal>
 
           <div className="border-t border-sea/15">

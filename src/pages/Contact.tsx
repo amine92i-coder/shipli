@@ -28,9 +28,15 @@ const CHANNELS = [
   },
   {
     icon: MapPin,
-    label: 'Offices',
-    value: CONTACT.cities,
-    note: 'Both ends of the corridor, staffed',
+    label: 'Morocco office',
+    value: 'Ben Guerir',
+    note: CONTACT.moroccoAddress,
+  },
+  {
+    icon: MapPin,
+    label: 'China office',
+    value: 'Hangzhou',
+    note: CONTACT.chinaAddress,
   },
 ];
 

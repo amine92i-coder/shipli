@@ -7,6 +7,7 @@ const OFFICES = [
     city: 'Morocco',
     role: 'Clearance · delivery · care',
     detail: 'Your brief, your contract, customs and the last mile to your door.',
+    address: CONTACT.moroccoAddress,
     phone: CONTACT.moroccoPhone,
     dark: false,
   },
@@ -14,6 +15,7 @@ const OFFICES = [
     city: 'China',
     role: 'Factories · contracts · quality',
     detail: 'Factory floors, negotiation in Mandarin, inspection before departure.',
+    address: CONTACT.chinaAddress,
     phone: CONTACT.chinaPhone,
     dark: true,
   },
@@ -54,7 +56,7 @@ export function Presence() {
                 />
                 <MapPin className="relative text-coral" size={24} />
                 <p
-                  className={`relative mt-24 font-mono text-[10px] uppercase tracking-[0.18em] ${
+                  className={`relative mt-20 font-mono text-[10px] uppercase tracking-[0.18em] ${
                     office.dark ? 'text-sky' : 'text-sea'
                   }`}
                 >
@@ -65,14 +67,21 @@ export function Presence() {
                 <p className={`relative mt-4 text-xs leading-6 ${office.dark ? 'text-mist/60' : 'text-deep/60'}`}>
                   {office.detail}
                 </p>
-                <a
-                  href={`tel:${office.phone.replace(/[^\d+]/g, '')}`}
-                  className={`relative mt-4 inline-block font-mono text-[11px] tracking-[0.1em] transition ${
-                    office.dark ? 'text-sky hover:text-white' : 'text-sea hover:text-abyss'
+                <address
+                  className={`relative mt-4 border-t pt-4 text-xs not-italic leading-6 ${
+                    office.dark ? 'border-white/15 text-mist/70' : 'border-sea/15 text-deep/70'
                   }`}
                 >
-                  {office.phone}
-                </a>
+                  {office.address}
+                  <a
+                    href={`tel:${office.phone.replace(/[^\d+]/g, '')}`}
+                    className={`mt-3 block font-mono text-[11px] tracking-[0.1em] transition ${
+                      office.dark ? 'text-sky hover:text-white' : 'text-sea hover:text-abyss'
+                    }`}
+                  >
+                    {office.phone}
+                  </a>
+                </address>
               </div>
             </Reveal>
           ))}

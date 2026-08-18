@@ -25,7 +25,17 @@ export function VideoBlock() {
                 <video src={VIDEO_SRC} controls autoPlay className="h-full w-full object-cover" />
               ) : (
                 <>
+                  {/* Real poster frame from a supplier visit — the film is not
+                      shot yet, but the still should still be ours. */}
+                  <img
+                    src="/images/gallery/gallery-6.jpg"
+                    alt=""
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full scale-105 object-cover transition duration-[1200ms] group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-abyss/45" />
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(94,194,232,.28),transparent_60%)]" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-abyss/85 via-transparent to-abyss/45" />
                   <div className="dot-grid absolute inset-0 opacity-20" />
 
                   <div className="absolute inset-x-0 top-0 flex items-center justify-between px-6 py-5 font-mono text-[10px] uppercase tracking-[0.18em] text-sky">
@@ -81,8 +91,12 @@ export function VideoBlock() {
 
           <Reveal delay={0.12}>
             <SectionLabel tone="light">A different kind of middle</SectionLabel>
-            <h2 className="display mt-4 text-4xl text-shell sm:text-5xl" data-testid="text-video-heading">
-              Sourcing with full control.
+            <h2
+              className="display mt-4 text-4xl leading-[1.12] text-shell sm:text-5xl"
+              data-testid="text-video-heading"
+            >
+              Sourcing With Full Control.
+              <span className="mt-2 block text-sky">Own the Market With Your Price.</span>
             </h2>
             <p className="mt-6 max-w-md text-base leading-8 text-mist/80">
               One company, two offices, no invisible handoffs. SHIPLI takes your brief from a direct factory

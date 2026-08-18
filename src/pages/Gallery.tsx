@@ -31,20 +31,23 @@ export default function Gallery() {
 
       <section className="bg-white py-20 sm:py-28">
         <div className="shell">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Masonry columns rather than a fixed-aspect grid: these are mostly
+              phone portraits, and cropping them to 16/9 threw away the subject. */}
+          <div className="columns-1 gap-4 sm:columns-2 lg:columns-3">
             {GALLERY.map((item, index) => (
-              <Reveal key={item.src} delay={(index % 3) * 0.06} className={index % 5 === 0 ? 'lg:col-span-2' : ''}>
+              <Reveal key={item.src} delay={(index % 3) * 0.06} className="mb-4 break-inside-avoid">
                 <button
                   type="button"
                   onClick={() => setOpen(index)}
-                  className={`group relative block h-full w-full overflow-hidden rounded-3xl border border-abyss/10 text-left ${
-                    index % 5 === 0 ? 'aspect-[16/9]' : 'aspect-[4/3]'
-                  }`}
+                  className="group relative block w-full overflow-hidden rounded-3xl border border-abyss/10 text-left"
                 >
                   <img
                     src={item.src}
                     alt={item.caption}
-                    className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                    width={item.w}
+                    height={item.h}
+                    loading={index < 3 ? undefined : 'lazy'}
+                    className="block h-auto w-full transition duration-700 group-hover:scale-105"
                   />
                   <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-abyss/85 to-transparent p-5 text-sm font-semibold text-shell opacity-0 transition duration-500 group-hover:opacity-100">
                     {item.caption}

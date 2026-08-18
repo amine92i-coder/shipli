@@ -1,94 +1,141 @@
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, ArrowUpRight, MousePointer2, ShieldCheck } from 'lucide-react';
-import { OceanScene } from './ocean/OceanScene';
-import { HERO, STATS } from '@/data/content';
+import { ArrowRight, ArrowUpRight, ShieldCheck } from 'lucide-react';
+import { CrossingScene } from './hero/CrossingScene';
+import { HERO } from '@/data/content';
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const copyY = useTransform(scrollYProgress, [0, 1], [0, 120]);
-  const copyOpacity = useTransform(scrollYProgress, [0, 0.65], [1, 0]);
+  const copyY = useTransform(scrollYProgress, [0, 1], [0, 110]);
+  const copyOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   return (
-    <section ref={ref} className="relative min-h-[100svh] overflow-hidden" data-testid="section-hero">
-      <OceanScene progress={scrollYProgress} />
+    /* 84svh, not 100. A full-height hero spent its last couple of hundred pixels
+       on empty water below the copy and gave no sign there was a page under it;
+       this ends above the fold, so the next section's top edge is always
+       showing.
 
+       Shortening it is also what lets the land grow. The scene fits by the
+       tighter of width and height, so a 16:9 frame inside a 2.1:1 section would
+       have fitted by HEIGHT and shrunk every landmass by about a sixth. The
+       frame was reshaped to match (1600x780, see build-countries.mjs), which
+       buys that scale back before the countries are enlarged on top of it.
+
+       min-h is for a phone held sideways, where 84svh is about 330px and the
+       headline alone would fill it. There the hero is allowed to run past the
+       fold rather than crush its own contents. */
+    <section
+      ref={ref}
+      className="relative flex h-[84svh] min-h-[30rem] flex-col overflow-hidden bg-abyss text-shell"
+      data-testid="section-hero"
+    >
+      {/* The scene is the background, not a band below the copy. It covers the
+          section at every ratio (the ocean is object-cover, the meaningful
+          geometry is an SVG at "meet"), so there is nothing that can be cut off
+          at the fold. */}
+      <CrossingScene progress={scrollYProgress} />
+
+      {/* Pinned under the header rather than centred in the section.
+          Centring made the copy's position a function of section height, so
+          every viewport needed its own negative-margin correction to keep the
+          block clear of Morocco — six media variants, each measured, and each
+          only about half as effective as its value suggested (a negative margin
+          on a child of a justify-center column moves the block by roughly half
+          the margin). Pinning puts the copy in the same place on every desktop
+          viewport, and leaves one thing to check instead of six: how far up
+          Morocco climbs as the section gets shorter.
+
+          The pad is a clamp rather than a media ladder for the same reason — it
+          tracks viewport height continuously, and its 88px floor is what clears
+          the 74px fixed header on the shortest screens. */}
       <motion.div
         style={{ y: copyY, opacity: copyOpacity }}
-        className="relative z-[55] flex min-h-[100svh] items-center pb-36 pt-28 sm:pb-44"
+        className="relative z-20 w-full pt-[clamp(88px,14svh,132px)]"
       >
         <div className="shell">
-          <div className="max-w-2xl">
+          {/* Narrowed on a landscape phone so the block clears China sideways:
+              the two countries sit at opposite corners, so the copy has to give
+              up width there, not height. */}
+          <div className="max-w-xl [@media(max-width:900px)_and_(max-height:620px)]:max-w-md">
             <div className="animate-rise flex items-center gap-3">
               <span className="h-px w-9 bg-coral" />
-              <p className="eyebrow text-deep">{HERO.eyebrow}</p>
+              <p className="eyebrow text-sky">{HERO.eyebrow}</p>
             </div>
 
+            {/* Three relief bands, all mutually exclusive so no two can ever
+                match at once — these are arbitrary media variants of equal
+                specificity, so an overlap would be settled by Tailwind's
+                emission order rather than by intent.
+
+                >=901 wide and <=820 tall is the short LAPTOP (a 1280x800 or a
+                1280x700 window). It has width to spare and no height: the
+                section shrinks with the viewport while Morocco's north coast
+                climbs toward the copy, and at full rhythm the two meet. Type and
+                gaps tighten; nothing is dropped, because once it is smaller
+                there is room for all of it.
+
+                <=900 wide and 621-720 tall is the short portrait phone (an SE,
+                an 8) — the same tightening, one step further.
+
+                <=900 wide and <=620 tall is a phone on its side. The sub goes,
+                leaving the headline and the two buttons, which is a complete
+                message on its own; a phone held sideways is not a posture anyone
+                reads a paragraph in.
+
+                Height alone cannot separate these: a 1280x700 window and a
+                375x667 phone are both "short", and gating on height alone put a
+                25.6px headline on the laptop. Only the phones are short AND
+                narrow. */}
             <h1
-              className="display animate-rise mt-6 text-[clamp(2.75rem,6.6vw,5.75rem)] text-abyss [animation-delay:.1s]"
+              className="display animate-rise mt-5 text-[clamp(1.8rem,3.1vw,2.5rem)] leading-[1.08] text-shell [animation-delay:.1s] [@media(min-width:901px)_and_(max-height:820px)]:mt-3 [@media(min-width:901px)_and_(max-height:820px)]:text-[1.75rem] [@media(max-width:900px)_and_(max-height:620px)]:mt-2 [@media(max-width:900px)_and_(max-height:620px)]:text-[1.4rem] [@media(max-width:900px)_and_(min-height:621px)_and_(max-height:720px)]:mt-3 [@media(max-width:900px)_and_(min-height:621px)_and_(max-height:720px)]:text-[1.6rem]"
               data-testid="text-hero-headline"
             >
-              {HERO.headlineTop}{' '}
-              <span className="relative inline-block">
-                <span className="relative z-10">{HERO.headlineMark}</span>
-                <span className="absolute inset-x-0 bottom-[.12em] z-0 h-[.3em] -rotate-1 rounded-full bg-coral/45" />
+              <span className="block text-mist/60">{HERO.lineOneLead}</span>
+              <span className="relative inline-block whitespace-nowrap">
+                <span className="relative z-10">{HERO.lineOneMark}</span>
+                <span className="absolute inset-x-0 bottom-[.1em] z-0 h-[.3em] -rotate-1 rounded-full bg-coral/50" />
               </span>
-              <br />
-              {HERO.headlineBottom}
+              <span className="mt-3 block text-mist/60 [@media(max-height:820px)]:mt-1">
+                {HERO.lineTwoLead}
+              </span>
+              <span className="relative inline-block whitespace-nowrap">
+                <span className="relative z-10">{HERO.lineTwoMark}</span>
+                <span className="absolute inset-x-0 bottom-[.1em] z-0 h-[.3em] rotate-1 rounded-full bg-kelp/55" />
+              </span>
             </h1>
 
-            <p className="animate-rise mt-7 max-w-xl text-base leading-7 text-deep/85 [animation-delay:.2s] sm:text-lg sm:leading-8">
+            <p className="animate-rise mt-6 text-[15px] leading-7 text-mist/80 [animation-delay:.2s] [@media(min-width:901px)_and_(max-height:820px)]:mt-3.5 [@media(min-width:901px)_and_(max-height:820px)]:text-[14px] [@media(min-width:901px)_and_(max-height:820px)]:leading-6 [@media(max-width:900px)_and_(max-height:620px)]:hidden [@media(max-width:900px)_and_(min-height:621px)_and_(max-height:720px)]:mt-2.5 [@media(max-width:900px)_and_(min-height:621px)_and_(max-height:720px)]:text-[14px] [@media(max-width:900px)_and_(min-height:621px)_and_(max-height:720px)]:leading-6">
               {HERO.sub}
             </p>
 
-            <div className="animate-rise mt-9 flex flex-wrap items-center gap-3 [animation-delay:.3s]">
+            <div className="animate-rise mt-7 flex flex-wrap items-center gap-3 [animation-delay:.3s] [@media(min-width:901px)_and_(max-height:820px)]:mt-5 [@media(max-width:900px)_and_(max-height:620px)]:mt-3 [@media(max-width:900px)_and_(min-height:621px)_and_(max-height:720px)]:mt-4">
               <Link to="/start" className="btn-primary group" data-testid="button-hero-start">
                 {HERO.primary}
                 <ArrowRight size={17} className="transition group-hover:translate-x-1" />
               </Link>
-              <Link to="/contact" className="btn-ghost" data-testid="link-hero-contact">
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-abyss/30 px-6 py-3.5 text-sm font-bold text-shell backdrop-blur-sm transition duration-300 hover:border-sky/70 hover:bg-white/10"
+                data-testid="link-hero-contact"
+              >
                 {HERO.secondary}
                 <ArrowUpRight size={16} />
               </Link>
             </div>
 
-            <div className="animate-rise mt-10 flex items-center gap-3 text-xs font-semibold text-deep [animation-delay:.4s]">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-sea shadow-sm">
-                <ShieldCheck size={16} />
-              </span>
+            {/* The lane facts that used to sit here — distance, days at sea,
+                agents in between — are gone. The scene already carries the
+                distance, and a row of 10px monospace under the buttons was the
+                first thing squeezed out on every short viewport anyway. The
+                assurance line stays: it is a claim, not decoration. */}
+            <div className="animate-rise mt-6 flex items-center gap-2 text-[11.5px] font-semibold text-mist/70 [animation-delay:.4s] [@media(max-height:820px)]:mt-4 [@media(max-width:900px)_and_(max-height:620px)]:hidden">
+              <ShieldCheck size={14} className="text-sky" />
               {HERO.assurance}
             </div>
           </div>
         </div>
-      </motion.div>
-
-      {/* stat strip riding on the water */}
-      <motion.div
-        style={{ opacity: copyOpacity }}
-        className="pointer-events-none absolute inset-x-0 bottom-4 z-[56] sm:bottom-6"
-      >
-        <div className="shell">
-          <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/25 bg-white/20 backdrop-blur-md lg:grid-cols-4">
-            {STATS.map((stat) => (
-              <div key={stat.label} className="bg-white/25 px-4 py-3 sm:px-5 sm:py-4">
-                <p className="display text-xl text-white drop-shadow-sm sm:text-2xl">{stat.value}</p>
-                <p className="mt-1 font-mono text-[9px] uppercase leading-[1.35] tracking-[0.12em] text-white/90 sm:text-[10px] sm:tracking-[0.14em]">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-
-      <motion.div
-        style={{ opacity: copyOpacity }}
-        className="pointer-events-none absolute bottom-6 right-6 z-[57] hidden items-center gap-2 rounded-full bg-abyss/25 px-4 py-2 font-mono text-[9px] uppercase tracking-[0.18em] text-white backdrop-blur lg:flex"
-      >
-        <MousePointer2 size={12} />
-        Move · scroll to sail
       </motion.div>
     </section>
   );

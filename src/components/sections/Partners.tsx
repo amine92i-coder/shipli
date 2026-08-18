@@ -23,7 +23,7 @@ export function Partners() {
               src={partner.src}
               alt={partner.name}
               loading="lazy"
-              className="h-16 w-auto max-w-[180px] object-contain opacity-60 grayscale transition duration-500 hover:opacity-100 hover:grayscale-0 sm:h-20"
+              className="h-24 w-auto max-w-[260px] object-contain transition duration-500 hover:scale-105 sm:h-28 lg:h-32"
             />
           ))}
         </div>

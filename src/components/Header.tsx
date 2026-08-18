@@ -31,7 +31,12 @@ export function Header() {
     };
   }, [mobileOpen]);
 
-  // Only the homepage hero is light enough to sit under a transparent bar.
+  /**
+   * The bar is only transparent over the homepage hero — and that hero is now a
+   * dark ocean, so everything in the bar has to invert while it is. The default
+   * ink (deep/abyss) was chosen back when the hero was light; left alone it puts
+   * navy text on navy water and the whole navigation vanishes.
+   */
   const solid = scrolled || pathname !== '/';
 
   return (
@@ -42,7 +47,7 @@ export function Header() {
       data-testid="site-header"
     >
       <div className="shell flex h-[74px] items-center justify-between">
-        <Logo />
+        <Logo light={!solid} />
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
           {NAV.map((item) => (
@@ -55,7 +60,13 @@ export function Header() {
               <Link
                 to={item.to}
                 className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[13px] font-semibold transition ${
-                  pathname === item.to ? 'text-abyss' : 'text-deep/75 hover:text-abyss'
+                  solid
+                    ? pathname === item.to
+                      ? 'text-abyss'
+                      : 'text-deep/75 hover:text-abyss'
+                    : pathname === item.to
+                      ? 'text-shell'
+                      : 'text-shell/80 hover:text-shell'
                 }`}
                 data-testid={`link-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
               >
@@ -115,7 +126,9 @@ export function Header() {
 
         <button
           onClick={() => setMobileOpen((v) => !v)}
-          className="rounded-full border border-sea/20 bg-white/70 p-2.5 backdrop-blur lg:hidden"
+          className={`rounded-full border p-2.5 backdrop-blur transition-colors lg:hidden ${
+            solid ? 'border-sea/20 bg-white/70 text-abyss' : 'border-white/25 bg-abyss/30 text-shell'
+          }`}
           aria-label="Toggle menu"
           aria-expanded={mobileOpen}
           data-testid="button-mobile-menu"

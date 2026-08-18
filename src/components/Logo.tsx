@@ -23,8 +23,10 @@ export function Logo({ light = false }: { light?: boolean }) {
           opacity=".55"
         />
         <g className="origin-center transition-transform duration-500 group-hover:rotate-[14deg]">
-          <path d="M18 8.5 26 5l-2.6 5.4 4.6 1-9 3.4-3.2-2.6 2.6-.8Z" fill="#0E6E9E" />
-          <path d="M16 33.5h11l2.4-3.6h-4.2l-.5-3.4h-3l.4 3.4h-3.6Z" fill="#04263B" />
+          {/* The hull follows `ink`. Left at a fixed abyss it disappears against
+              the dark hero, which is the one place the light variant is used. */}
+          <path d="M18 8.5 26 5l-2.6 5.4 4.6 1-9 3.4-3.2-2.6 2.6-.8Z" fill={light ? '#5EC2E8' : '#0E6E9E'} />
+          <path d="M16 33.5h11l2.4-3.6h-4.2l-.5-3.4h-3l.4 3.4h-3.6Z" fill={ink} />
           <path d="M13 34.4c1.7 1.2 3.1 1.2 4.8 0 1.7 1.2 3.1 1.2 4.8 0 1.7 1.2 3.1 1.2 4.8 0" fill="none" stroke="#1D96C9" strokeWidth="1.6" strokeLinecap="round" />
         </g>
       </svg>
