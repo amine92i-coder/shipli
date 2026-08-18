@@ -1,10 +1,15 @@
 import { Link } from 'react-router-dom';
+import { useT } from '@/i18n/LangContext';
 
 /** Wordmark echoing the SHIPLI logo: a plane and a ship tracing one circular route. */
 export function Logo({ light = false }: { light?: boolean }) {
+  const t = useT();
   const ink = light ? '#F5FAFD' : '#04263B';
   return (
-    <Link to="/" className="group inline-flex items-center gap-2.5" aria-label="SHIPLI home" data-testid="link-logo">
+    /* The wordmark itself stays SHIPLI / ONLY FOR YOU in every language — it is
+       the company's mark, not a sentence — but the link needs an accessible name
+       a screen reader can announce in the reader's own language. */
+    <Link to="/" className="group inline-flex items-center gap-2.5" aria-label={t.meta.homeAria} data-testid="link-logo">
       <svg viewBox="0 0 44 44" className="h-9 w-9 shrink-0" aria-hidden="true">
         <path
           d="M9 30a15 15 0 0 1 8-22"

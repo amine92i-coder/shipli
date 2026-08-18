@@ -11,8 +11,20 @@
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!--
+      Cairo carries the Arabic. It is listed AFTER Manrope in the Tailwind sans
+      stack rather than swapped in by a class, because font fallback in CSS is
+      per-glyph: Latin characters keep resolving to Manrope and only the Arabic
+      ones fall through to Cairo. That means a mixed line — "DDP" inside an
+      Arabic sentence, or the SHIPLI wordmark — stays in the right face on both
+      halves, with no conditional styling anywhere.
+
+      The 800 weight is not optional: .display is font-extrabold, and a family
+      that stopped at 700 would have the browser synthesise the missing weight by
+      smearing the strokes, which on a cursive script closes the counters.
+    -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
   </head>

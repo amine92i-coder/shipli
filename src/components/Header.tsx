@@ -3,9 +3,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpRight, ChevronDown, Menu, X } from 'lucide-react';
 import { NAV } from '@/data/content';
+import { useT } from '@/i18n/LangContext';
+import { fill } from '@/i18n';
 import { Logo } from './Logo';
+import { LangSwitcher } from './LangSwitcher';
 
 export function Header() {
+  const t = useT();
   const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -49,8 +53,8 @@ export function Header() {
       <div className="shell flex h-[74px] items-center justify-between">
         <Logo light={!solid} />
 
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
-          {NAV.map((item) => (
+        <nav className="hidden items-center gap-1 lg:flex" aria-label={t.nav.primaryAria}>
+          {NAV.map((item, i) => (
             <div
               key={item.label}
               className="relative"
@@ -68,9 +72,10 @@ export function Header() {
                       ? 'text-shell'
                       : 'text-shell/80 hover:text-shell'
                 }`}
+                /* Test ids stay on the English label so they survive translation. */
                 data-testid={`link-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
               >
-                {item.label}
+                {t.nav.items[i].label}
                 {item.children && (
                   <ChevronDown
                     size={13}
@@ -89,20 +94,22 @@ export function Header() {
                     className="absolute left-1/2 top-full w-[340px] -translate-x-1/2 pt-3"
                   >
                     <div className="overflow-hidden rounded-2xl border border-sea/[0.12] bg-white/95 p-2 shadow-[0_24px_60px_-24px_rgba(4,38,59,.45)] backdrop-blur-xl">
-                      {item.children.map((child) => (
+                      {item.children.map((child, j) => (
                         <Link
                           key={child.to}
                           to={child.to}
                           className="group block rounded-xl px-3.5 py-3 transition hover:bg-foam"
                         >
                           <span className="flex items-center justify-between gap-3 text-sm font-bold text-abyss">
-                            {child.label}
+                            {t.nav.items[i].children[j].label}
                             <ArrowUpRight
                               size={14}
-                              className="shrink-0 text-sea opacity-0 transition group-hover:opacity-100"
+                              className="shrink-0 text-sea opacity-0 transition group-hover:opacity-100 rtl:rotate-[-90deg]"
                             />
                           </span>
-                          <span className="mt-1 block text-xs leading-5 text-deep/65">{child.blurb}</span>
+                          <span className="mt-1 block text-xs leading-5 text-deep/65">
+                            {t.nav.items[i].children[j].blurb}
+                          </span>
                         </Link>
                       ))}
                     </div>
@@ -114,27 +121,33 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
+          <LangSwitcher light={!solid} />
           <Link
             to="/start"
             className="flex items-center gap-2 rounded-full bg-coral px-5 py-2.5 text-[12px] font-bold text-abyss transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-12px_rgba(242,118,92,.9)]"
             data-testid="button-header-start"
           >
-            Start sourcing
-            <ArrowUpRight size={14} />
+            {t.nav.cta}
+            <ArrowUpRight size={14} className="rtl:rotate-[-90deg]" />
           </Link>
         </div>
 
-        <button
-          onClick={() => setMobileOpen((v) => !v)}
-          className={`rounded-full border p-2.5 backdrop-blur transition-colors lg:hidden ${
-            solid ? 'border-sea/20 bg-white/70 text-abyss' : 'border-white/25 bg-abyss/30 text-shell'
-          }`}
-          aria-label="Toggle menu"
-          aria-expanded={mobileOpen}
-          data-testid="button-mobile-menu"
-        >
-          {mobileOpen ? <X size={19} /> : <Menu size={19} />}
-        </button>
+        {/* The switcher sits outside the drawer on mobile: a visitor who cannot
+            read the current language should not have to open a menu to escape it. */}
+        <div className="flex items-center gap-2 lg:hidden">
+          <LangSwitcher light={!solid} />
+          <button
+            onClick={() => setMobileOpen((v) => !v)}
+            className={`rounded-full border p-2.5 backdrop-blur transition-colors ${
+              solid ? 'border-sea/20 bg-white/70 text-abyss' : 'border-white/25 bg-abyss/30 text-shell'
+            }`}
+            aria-label={t.nav.toggleMenu}
+            aria-expanded={mobileOpen}
+            data-testid="button-mobile-menu"
+          >
+            {mobileOpen ? <X size={19} /> : <Menu size={19} />}
+          </button>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -146,17 +159,17 @@ export function Header() {
             className="h-[calc(100svh-74px)] overflow-y-auto border-t border-sea/10 bg-shell px-5 pb-10 pt-4 lg:hidden"
             data-testid="mobile-menu"
           >
-            {NAV.map((item) => (
+            {NAV.map((item, i) => (
               <div key={item.label} className="border-b border-sea/10">
                 <div className="flex items-center justify-between">
                   <Link to={item.to} className="flex-1 py-4 text-base font-bold text-abyss">
-                    {item.label}
+                    {t.nav.items[i].label}
                   </Link>
                   {item.children && (
                     <button
                       onClick={() => setMobileGroup(mobileGroup === item.label ? null : item.label)}
                       className="p-3 text-sea"
-                      aria-label={`Toggle ${item.label}`}
+                      aria-label={fill(t.nav.toggleGroup, { group: t.nav.items[i].label })}
                     >
                       <ChevronDown
                         size={18}
@@ -166,10 +179,10 @@ export function Header() {
                   )}
                 </div>
                 {item.children && mobileGroup === item.label && (
-                  <div className="pb-3 pl-3">
-                    {item.children.map((child) => (
+                  <div className="pb-3 ps-3">
+                    {item.children.map((child, j) => (
                       <Link key={child.to} to={child.to} className="block py-2.5 text-sm font-semibold text-deep/80">
-                        {child.label}
+                        {t.nav.items[i].children[j].label}
                       </Link>
                     ))}
                   </div>
@@ -180,8 +193,8 @@ export function Header() {
               to="/start"
               className="mt-7 flex w-full items-center justify-center gap-2 rounded-full bg-coral px-6 py-3.5 text-sm font-bold text-abyss transition duration-300 active:translate-y-px"
             >
-              Start sourcing
-              <ArrowUpRight size={16} />
+              {t.nav.cta}
+              <ArrowUpRight size={16} className="rtl:rotate-[-90deg]" />
             </Link>
           </motion.div>
         )}

@@ -1,7 +1,9 @@
 import { PROCESS } from '@/data/content';
+import { useT } from '@/i18n/LangContext';
 import { Icon, Reveal, SectionLabel } from '../ui';
 
 export function Process() {
+  const t = useT();
   return (
     <section
       className="relative overflow-hidden bg-[linear-gradient(180deg,#04263B_0%,#083C5C_100%)] py-24 text-shell sm:py-32"
@@ -12,22 +14,19 @@ export function Process() {
 
       <div className="shell relative">
         <Reveal>
-          <SectionLabel tone="light">The route</SectionLabel>
+          <SectionLabel tone="light">{t.process.label}</SectionLabel>
         </Reveal>
         <div className="mt-4 grid gap-10 lg:grid-cols-[.7fr_1.3fr]">
           <Reveal>
             <h2 className="display text-4xl text-shell sm:text-5xl" data-testid="text-process-heading">
-              How we work at SHIPLI
+              {t.process.title}
             </h2>
-            <p className="mt-6 max-w-sm text-base leading-8 text-mist/80">
-              Six steps, each one owned by a SHIPLI team. You only ever worry about two things: receiving your product,
-              and your money.
-            </p>
+            <p className="mt-6 max-w-sm text-base leading-8 text-mist/80">{t.process.body}</p>
           </Reveal>
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {PROCESS.map((step, index) => (
-              <Reveal key={step.title} delay={index * 0.07}>
+              <Reveal key={step.icon} delay={index * 0.07}>
                 <div
                   className="group relative h-full rounded-2xl border border-white/[0.12] bg-white/[0.06] p-6 backdrop-blur-sm transition duration-500 hover:-translate-y-1.5 hover:border-sky/50 hover:bg-white/[0.1]"
                   data-testid={`card-process-${index + 1}`}
@@ -36,8 +35,10 @@ export function Process() {
                     <span className="font-mono text-xs text-sky">{String(index + 1).padStart(2, '0')}</span>
                     <Icon name={step.icon} size={19} className="text-coral" />
                   </div>
-                  <h3 className="mt-10 text-base font-bold leading-tight tracking-tight">{step.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-mist/75">{step.body}</p>
+                  <h3 className="mt-10 text-base font-bold leading-tight tracking-tight">
+                    {t.process.steps[index].title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-mist/75">{t.process.steps[index].body}</p>
                 </div>
               </Reveal>
             ))}

@@ -4,8 +4,10 @@ import { X } from 'lucide-react';
 import { GALLERY } from '@/data/content';
 import { PageHeader, Reveal } from '@/components/ui';
 import { Cta } from '@/components/sections/Cta';
+import { useT } from '@/i18n/LangContext';
 
 export default function Gallery() {
+  const t = useT();
   const [open, setOpen] = useState<number | null>(null);
 
   useEffect(() => {
@@ -23,11 +25,7 @@ export default function Gallery() {
 
   return (
     <>
-      <PageHeader
-        eyebrow="Resources · Gallery"
-        title="Factories, containers and the goods we moved"
-        intro="A look at the work between the factory gate in China and the delivery door in Morocco."
-      />
+      <PageHeader eyebrow={t.galleryPage.eyebrow} title={t.galleryPage.title} intro={t.galleryPage.intro} />
 
       <section className="bg-white py-20 sm:py-28">
         <div className="shell">
@@ -39,18 +37,18 @@ export default function Gallery() {
                 <button
                   type="button"
                   onClick={() => setOpen(index)}
-                  className="group relative block w-full overflow-hidden rounded-3xl border border-abyss/10 text-left"
+                  className="group relative block w-full overflow-hidden rounded-3xl border border-abyss/10 text-start"
                 >
                   <img
                     src={item.src}
-                    alt={item.caption}
+                    alt={t.gallery.captions[index]}
                     width={item.w}
                     height={item.h}
                     loading={index < 3 ? undefined : 'lazy'}
                     className="block h-auto w-full transition duration-700 group-hover:scale-105"
                   />
                   <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-abyss/85 to-transparent p-5 text-sm font-semibold text-shell opacity-0 transition duration-500 group-hover:opacity-100">
-                    {item.caption}
+                    {t.gallery.captions[index]}
                   </span>
                 </button>
               </Reveal>
@@ -71,8 +69,8 @@ export default function Gallery() {
             <button
               type="button"
               onClick={() => setOpen(null)}
-              aria-label="Close"
-              className="absolute right-6 top-6 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-shell transition hover:bg-white/20"
+              aria-label={t.galleryPage.close}
+              className="absolute end-6 top-6 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-shell transition hover:bg-white/20"
             >
               <X size={18} />
             </button>
@@ -86,11 +84,11 @@ export default function Gallery() {
             >
               <img
                 src={GALLERY[open].src}
-                alt={GALLERY[open].caption}
+                alt={t.gallery.captions[open]}
                 className="max-h-[78svh] w-full rounded-3xl object-contain"
               />
               <figcaption className="mt-4 text-center font-mono text-[11px] uppercase tracking-[0.18em] text-mist/70">
-                {GALLERY[open].caption}
+                {t.gallery.captions[open]}
               </figcaption>
             </motion.figure>
           </motion.div>

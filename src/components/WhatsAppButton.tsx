@@ -2,8 +2,16 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { WHATSAPP } from '@/data/content';
+import { useT } from '@/i18n/LangContext';
 
-export const WHATSAPP_HREF = `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(WHATSAPP.message)}`;
+/**
+ * The pre-filled first message is translated, so the link has to be built at
+ * render rather than at module scope — a visitor reading the Arabic site should
+ * arrive in WhatsApp with an Arabic sentence already typed.
+ */
+export function whatsappHref(message: string) {
+  return `https://wa.me/${WHATSAPP.number}?text=${encodeURIComponent(message)}`;
+}
 
 /** lucide ships no WhatsApp mark, so the glyph lives here. */
 export function WhatsAppIcon({ size = 24, className }: { size?: number; className?: string }) {
@@ -23,6 +31,7 @@ export function WhatsAppIcon({ size = 24, className }: { size?: number; classNam
 const TEASE_KEY = 'shipli:wa-teased';
 
 export function WhatsAppButton() {
+  const t = useT();
   const [teasing, setTeasing] = useState(false);
   // Once per session — a bubble that reappears on every page view is a nag.
   const [dismissed, setDismissed] = useState(() => {
@@ -72,7 +81,7 @@ export function WhatsAppButton() {
   }
 
   return (
-    <div className="fixed bottom-5 right-5 z-[80] flex items-end gap-3 sm:bottom-7 sm:right-7">
+    <div className="fixed bottom-5 end-5 z-[80] flex items-end gap-3 sm:bottom-7 sm:end-7">
       <AnimatePresence>
         {teasing && !dismissed && (
           <motion.div
@@ -82,13 +91,11 @@ export function WhatsAppButton() {
             transition={{ type: 'spring', stiffness: 320, damping: 26 }}
             className="mb-1 hidden max-w-[15rem] items-start gap-2 rounded-2xl bg-white px-4 py-3 shadow-[0_18px_40px_-16px_rgba(4,38,59,.45)] ring-1 ring-sea/10 sm:flex"
           >
-            <p className="text-xs leading-5 text-deep">
-              Need a price from China? Message us — we usually reply the same day.
-            </p>
+            <p className="text-xs leading-5 text-deep">{t.whatsapp.teaser}</p>
             <button
               onClick={dismiss}
-              className="-mr-1 -mt-1 shrink-0 rounded-full p-1 text-deep/40 transition hover:bg-shell hover:text-deep"
-              aria-label="Dismiss"
+              className="-me-1 -mt-1 shrink-0 rounded-full p-1 text-deep/40 transition hover:bg-shell hover:text-deep"
+              aria-label={t.whatsapp.dismiss}
             >
               <X size={13} />
             </button>
@@ -97,11 +104,11 @@ export function WhatsAppButton() {
       </AnimatePresence>
 
       <a
-        href={WHATSAPP_HREF}
+        href={whatsappHref(t.whatsapp.message)}
         target="_blank"
         rel="noopener noreferrer"
         onClick={dismiss}
-        aria-label="Chat with SHIPLI on WhatsApp"
+        aria-label={t.whatsapp.chatAria}
         data-testid="button-whatsapp-float"
         className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_14px_34px_-8px_rgba(37,211,102,.7)] transition duration-300 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366]"
       >

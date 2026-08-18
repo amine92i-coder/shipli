@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { CrossingScene } from './hero/CrossingScene';
-import { HERO } from '@/data/content';
+import { useT } from '@/i18n/LangContext';
 
 export function Hero() {
+  const t = useT();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
   const copyY = useTransform(scrollYProgress, [0, 1], [0, 110]);
@@ -57,11 +58,25 @@ export function Hero() {
         <div className="shell">
           {/* Narrowed on a landscape phone so the block clears China sideways:
               the two countries sit at opposite corners, so the copy has to give
-              up width there, not height. */}
-          <div className="max-w-xl [@media(max-width:900px)_and_(max-height:620px)]:max-w-md">
+              up width there, not height.
+
+              rtl:ms-auto is the one place on the site where the layout must NOT
+              mirror. Everything else here is text, and text follows the reader;
+              this block is positioned against a MAP. China is drawn in the upper
+              right and Morocco in the lower left because that is where they are,
+              and no reading direction moves them. Left to mirror normally the
+              Arabic copy landed on top of China — headline over the red flag,
+              buttons over the container ship (measured: the block ran x=656–1232
+              at 1280 wide, China starts around x=864).
+
+              margin-inline-start:auto pushes the block to the inline END, which
+              in RTL is the physical left — the open water the copy was always
+              written to sit on. The type inside still sets right-to-left, so the
+              paragraph reads correctly; only the column stays put. */}
+          <div className="max-w-xl rtl:ms-auto [@media(max-width:900px)_and_(max-height:620px)]:max-w-md">
             <div className="animate-rise flex items-center gap-3">
               <span className="h-px w-9 bg-coral" />
-              <p className="eyebrow text-sky">{HERO.eyebrow}</p>
+              <p className="eyebrow text-sky">{t.hero.eyebrow}</p>
             </div>
 
             {/* Three relief bands, all mutually exclusive so no two can ever
@@ -92,36 +107,36 @@ export function Hero() {
               className="display animate-rise mt-5 text-[clamp(1.8rem,3.1vw,2.5rem)] leading-[1.08] text-shell [animation-delay:.1s] [@media(min-width:901px)_and_(max-height:820px)]:mt-3 [@media(min-width:901px)_and_(max-height:820px)]:text-[1.75rem] [@media(max-width:900px)_and_(max-height:620px)]:mt-2 [@media(max-width:900px)_and_(max-height:620px)]:text-[1.4rem] [@media(max-width:900px)_and_(min-height:621px)_and_(max-height:720px)]:mt-3 [@media(max-width:900px)_and_(min-height:621px)_and_(max-height:720px)]:text-[1.6rem]"
               data-testid="text-hero-headline"
             >
-              <span className="block text-mist/60">{HERO.lineOneLead}</span>
+              <span className="block text-mist/60">{t.hero.lineOneLead}</span>
               <span className="relative inline-block whitespace-nowrap">
-                <span className="relative z-10">{HERO.lineOneMark}</span>
+                <span className="relative z-10">{t.hero.lineOneMark}</span>
                 <span className="absolute inset-x-0 bottom-[.1em] z-0 h-[.3em] -rotate-1 rounded-full bg-coral/50" />
               </span>
               <span className="mt-3 block text-mist/60 [@media(max-height:820px)]:mt-1">
-                {HERO.lineTwoLead}
+                {t.hero.lineTwoLead}
               </span>
               <span className="relative inline-block whitespace-nowrap">
-                <span className="relative z-10">{HERO.lineTwoMark}</span>
+                <span className="relative z-10">{t.hero.lineTwoMark}</span>
                 <span className="absolute inset-x-0 bottom-[.1em] z-0 h-[.3em] rotate-1 rounded-full bg-kelp/55" />
               </span>
             </h1>
 
             <p className="animate-rise mt-6 text-[15px] leading-7 text-mist/80 [animation-delay:.2s] [@media(min-width:901px)_and_(max-height:820px)]:mt-3.5 [@media(min-width:901px)_and_(max-height:820px)]:text-[14px] [@media(min-width:901px)_and_(max-height:820px)]:leading-6 [@media(max-width:900px)_and_(max-height:620px)]:hidden [@media(max-width:900px)_and_(min-height:621px)_and_(max-height:720px)]:mt-2.5 [@media(max-width:900px)_and_(min-height:621px)_and_(max-height:720px)]:text-[14px] [@media(max-width:900px)_and_(min-height:621px)_and_(max-height:720px)]:leading-6">
-              {HERO.sub}
+              {t.hero.sub}
             </p>
 
             <div className="animate-rise mt-7 flex flex-wrap items-center gap-3 [animation-delay:.3s] [@media(min-width:901px)_and_(max-height:820px)]:mt-5 [@media(max-width:900px)_and_(max-height:620px)]:mt-3 [@media(max-width:900px)_and_(min-height:621px)_and_(max-height:720px)]:mt-4">
               <Link to="/start" className="btn-primary group" data-testid="button-hero-start">
-                {HERO.primary}
-                <ArrowRight size={17} className="transition group-hover:translate-x-1" />
+                {t.hero.primary}
+                <ArrowRight size={17} className="transition group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />
               </Link>
               <Link
                 to="/contact"
                 className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-abyss/30 px-6 py-3.5 text-sm font-bold text-shell backdrop-blur-sm transition duration-300 hover:border-sky/70 hover:bg-white/10"
                 data-testid="link-hero-contact"
               >
-                {HERO.secondary}
-                <ArrowUpRight size={16} />
+                {t.hero.secondary}
+                <ArrowUpRight size={16} className="rtl:rotate-[-90deg]" />
               </Link>
             </div>
 
@@ -131,8 +146,8 @@ export function Hero() {
                 first thing squeezed out on every short viewport anyway. The
                 assurance line stays: it is a claim, not decoration. */}
             <div className="animate-rise mt-6 flex items-center gap-2 text-[11.5px] font-semibold text-mist/70 [animation-delay:.4s] [@media(max-height:820px)]:mt-4 [@media(max-width:900px)_and_(max-height:620px)]:hidden">
-              <ShieldCheck size={14} className="text-sky" />
-              {HERO.assurance}
+              <ShieldCheck size={14} className="shrink-0 text-sky" />
+              {t.hero.assurance}
             </div>
           </div>
         </div>

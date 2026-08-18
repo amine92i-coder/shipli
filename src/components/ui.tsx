@@ -72,7 +72,7 @@ export function PageHeader({
   return (
     <header className="relative overflow-hidden border-b border-sea/10 bg-[linear-gradient(180deg,#E4F3FA_0%,#F5FAFD_100%)] pb-16 pt-36 sm:pb-24 sm:pt-44">
       <div className="dot-grid absolute inset-0 opacity-40" />
-      <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-sky/25 blur-3xl" />
+      <div className="absolute -end-20 -top-20 h-80 w-80 rounded-full bg-sky/25 blur-3xl" />
       <div className="shell relative">
         <Reveal>
           <div className="flex items-center gap-3">

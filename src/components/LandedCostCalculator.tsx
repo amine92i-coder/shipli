@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, Plane, RotateCcw, Ship, Zap } from 'lucide-react';
+import { useT } from '@/i18n/LangContext';
+import { fill, numericLocale } from '@/i18n';
 
 type Mode = 'sea' | 'air' | 'express';
 
@@ -10,11 +12,15 @@ type Mode = 'sea' | 'air' | 'express';
  * cost of an LCL cubic metre spread over a typical density; air and express are
  * all-in door rates. They are starting points — every real quote we send is
  * priced off the actual carton dimensions.
+ *
+ * Only the parts a translator must not touch live here: the id the state machine
+ * switches on, the rate, and the icon. The name of the mode and its transit time
+ * are prose and sit in the dictionaries, zipped on by position.
  */
-const MODES: { id: Mode; label: string; rate: number; transit: string; icon: typeof Ship }[] = [
-  { id: 'sea', label: 'Sea', rate: 1.4, transit: '30–40 days', icon: Ship },
-  { id: 'air', label: 'Air', rate: 6.5, transit: '7–12 days', icon: Plane },
-  { id: 'express', label: 'Express', rate: 9.8, transit: '4–7 days', icon: Zap },
+const MODE_SPECS: { id: Mode; rate: number; icon: typeof Ship }[] = [
+  { id: 'sea', rate: 1.4, icon: Ship },
+  { id: 'air', rate: 6.5, icon: Plane },
+  { id: 'express', rate: 9.8, icon: Zap },
 ];
 
 const DEFAULTS = {
@@ -54,11 +60,41 @@ function fromSlider(t: number, min: number, max: number, step: number, log: bool
   return Math.min(Math.max(snapped, min), max);
 }
 
-const usd = (n: number) =>
-  n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: n < 100 ? 2 : 0 });
+/**
+ * Money formatters are built from the active locale rather than pinned to
+ * en-US, so $4.72 becomes 4,72 $US in French. The grouping separator matters
+ * more than it looks: a French reader who sees "1,250" reads one-point-two-five,
+ * and this whole tool exists to stop people misreading a number.
+ *
+ * Which is why Arabic does not get to keep its own. ICU's ar-MA groups with a
+ * FULL STOP and marks decimals with a comma, so this panel would show a 6.123
+ * total sitting directly above a 6,88 unit cost — the two conventions inverted,
+ * three lines apart, both plausible. The reader is holding a supplier quotation
+ * written in Western figures; that is the document they have to reconcile
+ * against, and "6.123" reads as six-point-one in it.
+ *
+ * Substituting a narrow no-break space for the group separator settles it. A
+ * space cannot be mistaken for a decimal mark in any convention, so the comma is
+ * left as the only radix point on screen and the ambiguity has nowhere to live.
+ * It also lands Arabic on the same shape as French — space groups, comma
+ * decimals — which is what Moroccan invoices and customs declarations already
+ * use. Decimals are untouched; this is about the separator that has no
+ * consistent meaning, not the one that does.
+ */
+function makeFormatters(locale: string) {
+  const l = numericLocale(locale);
 
-const mad = (n: number) =>
-  `${n.toLocaleString('en-US', { maximumFractionDigits: n < 100 ? 2 : 0 })} MAD`;
+  // Ask the locale what it uses to group, rather than assuming: only a
+  // full-stop grouper is dangerous, and only that one gets replaced.
+  const groupSep = new Intl.NumberFormat(l).formatToParts(11111).find((p) => p.type === 'group')?.value;
+  const degroup = (s: string) => (groupSep === '.' ? s.split('.').join(' ') : s);
+
+  const usd = (n: number) =>
+    degroup(n.toLocaleString(l, { style: 'currency', currency: 'USD', maximumFractionDigits: n < 100 ? 2 : 0 }));
+  const mad = (n: number) => `${degroup(n.toLocaleString(l, { maximumFractionDigits: n < 100 ? 2 : 0 }))} MAD`;
+  const plain = (n: number, digits = 0) => degroup(n.toLocaleString(l, { maximumFractionDigits: digits }));
+  return { usd, mad, plain };
+}
 
 function Field({
   label,
@@ -87,7 +123,10 @@ function Field({
     <div>
       <div className="flex items-baseline justify-between gap-3">
         <label className="text-[13px] font-semibold text-deep">{label}</label>
-        <div className="flex items-center gap-1 font-mono text-xs text-sea">
+        {/* Forced LTR even in Arabic. "$ 4.20 /kg" is a formula, not a sentence:
+            the currency sign belongs before the figure and the unit after it, in
+            that order, in every language this site speaks. */}
+        <div className="flex items-center gap-1 font-mono text-xs text-sea" dir="ltr">
           {prefix && <span className="text-deep/45">{prefix}</span>}
           <input
             type="number"
@@ -143,6 +182,10 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
 }
 
 export function LandedCostCalculator() {
+  const t = useT();
+  const c = t.calculator;
+  const { usd, mad, plain } = makeFormatters(t.meta.locale);
+
   const [mode, setMode] = useState<Mode>(DEFAULTS.mode);
   const [unitCost, setUnitCost] = useState(DEFAULTS.unitCost);
   const [quantity, setQuantity] = useState(DEFAULTS.quantity);
@@ -157,7 +200,7 @@ export function LandedCostCalculator() {
 
   function pickMode(next: Mode) {
     setMode(next);
-    setFreightRate(MODES.find((m) => m.id === next)!.rate);
+    setFreightRate(MODE_SPECS.find((m) => m.id === next)!.rate);
   }
 
   function reset() {
@@ -198,14 +241,14 @@ export function LandedCostCalculator() {
   }, [unitCost, quantity, unitWeight, freightRate, dutyRate, vatRate, clearance, agencyFee, retailPrice]);
 
   const bars = [
-    { label: 'Goods, ex-works', value: r.goods, color: 'bg-wave' },
-    { label: 'Freight & handling', value: r.freight, color: 'bg-sky' },
-    { label: 'Import duty', value: r.duty, color: 'bg-sand' },
-    { label: 'VAT', value: r.vat, color: 'bg-coral' },
+    { key: 'goods', label: c.bars.goods, value: r.goods, color: 'bg-wave' },
+    { key: 'freight', label: c.bars.freight, value: r.freight, color: 'bg-sky' },
+    { key: 'duty', label: c.bars.duty, value: r.duty, color: 'bg-sand' },
+    { key: 'vat', label: c.bars.vat, value: r.vat, color: 'bg-coral' },
     // Neutral rather than another blue — mist sat too close to the sky used for
     // freight, and the two swatches read as the same colour in the legend.
-    { label: 'Clearance & port', value: clearance, color: 'bg-white/75' },
-    { label: 'SHIPLI fee', value: r.fee, color: 'bg-kelp' },
+    { key: 'clearance', label: c.bars.clearance, value: clearance, color: 'bg-white/75' },
+    { key: 'fee', label: c.bars.fee, value: r.fee, color: 'bg-kelp' },
   ];
 
   // Judge the rounded figure we actually print, not the raw float — otherwise a
@@ -215,10 +258,10 @@ export function LandedCostCalculator() {
 
   const health =
     shownMargin >= 45
-      ? { label: 'Healthy margin', color: 'text-kelp', bar: 'bg-kelp' }
+      ? { label: c.healthGood, color: 'text-kelp', bar: 'bg-kelp' }
       : shownMargin > 0
-        ? { label: 'Thin — worth re-pricing', color: 'text-sand', bar: 'bg-sand' }
-        : { label: 'Selling below landed cost', color: 'text-coral', bar: 'bg-coral' };
+        ? { label: c.healthThin, color: 'text-sand', bar: 'bg-sand' }
+        : { label: c.healthBad, color: 'text-coral', bar: 'bg-coral' };
 
   return (
     <div id="calculator" className="grid gap-5 lg:grid-cols-[1fr_.9fr] lg:items-start">
@@ -226,10 +269,8 @@ export function LandedCostCalculator() {
       <div className="card border-sea/15 bg-white p-6 shadow-[0_30px_70px_-50px_rgba(4,38,59,.5)] sm:p-8">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="eyebrow text-sea">How it ships</p>
-            <p className="mt-2 text-[13px] leading-5 text-deep/70">
-              Pick a mode and we preload an indicative China → Casablanca rate.
-            </p>
+            <p className="eyebrow text-sea">{c.modeLabel}</p>
+            <p className="mt-2 text-[13px] leading-5 text-deep/70">{c.modeBody}</p>
           </div>
           <button
             type="button"
@@ -237,20 +278,21 @@ export function LandedCostCalculator() {
             className="flex shrink-0 items-center gap-1.5 rounded-full border border-sea/20 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-deep/60 transition duration-300 hover:border-sea hover:text-sea"
             data-testid="button-calc-reset"
           >
-            <RotateCcw size={12} /> Reset
+            <RotateCcw size={12} /> {c.reset}
           </button>
         </div>
 
         <div className="mt-5 grid grid-cols-3 gap-2">
-          {MODES.map((m) => {
+          {MODE_SPECS.map((m, index) => {
             const active = mode === m.id;
+            const copy = c.modes[index];
             return (
               <button
                 key={m.id}
                 type="button"
                 onClick={() => pickMode(m.id)}
                 aria-pressed={active}
-                className={`rounded-2xl border px-3 py-3 text-left transition duration-300 ${
+                className={`rounded-2xl border px-3 py-3 text-start transition duration-300 ${
                   active
                     ? 'border-sea bg-sea text-white shadow-[0_16px_30px_-18px_rgba(14,110,158,.9)]'
                     : 'border-sea/15 bg-shell text-deep/70 hover:border-sea/40 hover:bg-foam'
@@ -258,13 +300,13 @@ export function LandedCostCalculator() {
                 data-testid={`button-mode-${m.id}`}
               >
                 <m.icon size={16} className={active ? 'text-sky' : 'text-sea'} />
-                <span className="mt-2 block text-[13px] font-bold">{m.label}</span>
+                <span className="mt-2 block text-[13px] font-bold">{copy.label}</span>
                 <span
                   className={`mt-0.5 block font-mono text-[9px] uppercase tracking-[0.1em] ${
                     active ? 'text-mist' : 'text-deep/45'
                   }`}
                 >
-                  {m.transit}
+                  {copy.transit}
                 </span>
               </button>
             );
@@ -272,12 +314,12 @@ export function LandedCostCalculator() {
         </div>
 
         <div className="mt-9 space-y-9">
-          <Group title="The order">
-            <Field label="Factory unit price" value={unitCost} onChange={setUnitCost} min={0.1} max={500} step={0.1} prefix="$" log />
-            <Field label="Quantity" value={quantity} onChange={setQuantity} min={10} max={50000} step={10} suffix="pcs" log />
+          <Group title={c.groupOrder}>
+            <Field label={c.unitCost} value={unitCost} onChange={setUnitCost} min={0.1} max={500} step={0.1} prefix="$" log />
+            <Field label={c.quantity} value={quantity} onChange={setQuantity} min={10} max={50000} step={10} suffix={c.pcs} log />
             <Field
-              label="Weight per unit"
-              hint="Gross, packed. For bulky-but-light goods carriers bill volumetric weight instead — nudge this up."
+              label={c.unitWeight}
+              hint={c.unitWeightHint}
               value={unitWeight}
               onChange={setUnitWeight}
               min={1}
@@ -288,11 +330,11 @@ export function LandedCostCalculator() {
             />
           </Group>
 
-          <Group title="Landing it in Morocco">
-            <Field label="Freight rate" value={freightRate} onChange={setFreightRate} min={0.2} max={25} step={0.1} prefix="$" suffix="/kg" log />
+          <Group title={c.groupLanding}>
+            <Field label={c.freightRate} value={freightRate} onChange={setFreightRate} min={0.2} max={25} step={0.1} prefix="$" suffix={c.perKg} log />
             <Field
-              label="Import duty"
-              hint="Moroccan tariffs run 2.5%–40% by HS code. The China–Morocco lines are not zero-rated, so check the code before you commit."
+              label={c.dutyRate}
+              hint={c.dutyHint}
               value={dutyRate}
               onChange={setDutyRate}
               min={0}
@@ -301,8 +343,8 @@ export function LandedCostCalculator() {
               suffix="%"
             />
             <Field
-              label="Import VAT"
-              hint="20% is the standard Moroccan rate. Recoverable if you are VAT-registered — a cash-flow cost, not a margin cost."
+              label={c.vatRate}
+              hint={c.vatHint}
               value={vatRate}
               onChange={setVatRate}
               min={0}
@@ -311,8 +353,8 @@ export function LandedCostCalculator() {
               suffix="%"
             />
             <Field
-              label="Clearance & port"
-              hint="Flat per shipment — declaration, handling, delivery order. This is the line that makes small orders expensive per unit."
+              label={c.clearance}
+              hint={c.clearanceHint}
               value={clearance}
               onChange={setClearance}
               min={0}
@@ -322,10 +364,10 @@ export function LandedCostCalculator() {
             />
           </Group>
 
-          <Group title="Your side">
+          <Group title={c.groupYours}>
             <Field
-              label="SHIPLI fee"
-              hint="One fee on the goods value. No commission on freight, no supplier kickback, no hidden second margin."
+              label={c.agencyFee}
+              hint={c.agencyFeeHint}
               value={agencyFee}
               onChange={setAgencyFee}
               min={0}
@@ -333,7 +375,7 @@ export function LandedCostCalculator() {
               step={0.5}
               suffix="%"
             />
-            <Field label="Your selling price" value={retailPrice} onChange={setRetailPrice} min={0.5} max={2000} step={0.5} prefix="$" log />
+            <Field label={c.retailPrice} value={retailPrice} onChange={setRetailPrice} min={0.5} max={2000} step={0.5} prefix="$" log />
           </Group>
         </div>
       </div>
@@ -343,18 +385,17 @@ export function LandedCostCalculator() {
         <div className="card overflow-hidden border-white/10 bg-abyss text-shell shadow-[0_40px_90px_-50px_rgba(4,38,59,.9)]">
           <div className="relative overflow-hidden border-b border-white/10 px-6 py-7 sm:px-8">
             <div className="dot-grid absolute inset-0 opacity-20" />
-            <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-sea/30 blur-3xl" />
+            <div className="absolute -end-16 -top-16 h-48 w-48 rounded-full bg-sea/30 blur-3xl" />
             <div className="relative">
-              <p className="eyebrow text-sky">Landed cost per unit</p>
+              <p className="eyebrow text-sky">{c.perUnitLabel}</p>
               <p className="display mt-3 text-[clamp(2.5rem,7vw,3.6rem)] text-shell" data-testid="text-calc-perunit">
                 {usd(r.perUnit)}
               </p>
               <p className="mt-2 font-mono text-[11px] tracking-[0.06em] text-mist/70">
-                ≈ {mad(r.perUnit * fx)} · delivered, duty and VAT paid
+                {fill(c.perUnitNote, { mad: mad(r.perUnit * fx) })}
               </p>
               <p className="mt-5 border-t border-white/10 pt-4 font-mono text-[11px] leading-5 tracking-[0.06em] text-mist/60">
-                Order total {usd(r.total)} · {r.weightKg.toLocaleString('en-US', { maximumFractionDigits: 0 })} kg
-                chargeable
+                {fill(c.orderTotal, { total: usd(r.total), kg: plain(r.weightKg) })}
               </p>
             </div>
           </div>
@@ -363,7 +404,7 @@ export function LandedCostCalculator() {
             <div className="flex h-2.5 w-full overflow-hidden rounded-full bg-white/10">
               {bars.map((bar) => (
                 <motion.div
-                  key={bar.label}
+                  key={bar.key}
                   className={bar.color}
                   animate={{ width: `${r.total > 0 ? (bar.value / r.total) * 100 : 0}%` }}
                   transition={{ duration: 0.4, ease: 'easeOut' }}
@@ -372,7 +413,7 @@ export function LandedCostCalculator() {
             </div>
             <dl className="mt-5 space-y-3">
               {bars.map((bar) => (
-                <div key={bar.label} className="flex items-center justify-between gap-3 text-[13px]">
+                <div key={bar.key} className="flex items-center justify-between gap-3 text-[13px]">
                   <dt className="flex items-center gap-2.5 text-mist/75">
                     <span className={`h-2 w-2 shrink-0 rounded-sm ${bar.color}`} />
                     {bar.label}
@@ -386,13 +427,13 @@ export function LandedCostCalculator() {
           <div className="mt-6 border-t border-white/10 px-6 py-6 sm:px-8">
             <div className="flex items-end justify-between gap-4">
               <div>
-                <p className="eyebrow text-sky">Gross margin</p>
+                <p className="eyebrow text-sky">{c.margin}</p>
                 <p className={`display mt-2 text-4xl ${health.color}`} data-testid="text-calc-margin">
                   {shownMargin.toFixed(1)}%
                 </p>
               </div>
-              <div className="text-right">
-                <p className="eyebrow text-sky">Markup</p>
+              <div className="text-end">
+                <p className="eyebrow text-sky">{c.markup}</p>
                 <p className="display mt-2 text-4xl text-shell">{r.markup.toFixed(2)}×</p>
               </div>
             </div>
@@ -404,16 +445,33 @@ export function LandedCostCalculator() {
               />
             </div>
             <p className={`mt-3 font-mono text-[10px] uppercase tracking-[0.16em] ${health.color}`}>{health.label}</p>
+            {/* {profit} is deliberately left unfilled so the sentence can be
+                split around it and the figure rendered bold. Every other
+                placeholder is substituted first, which means the bold word lands
+                wherever that language puts it — French and Arabic both order this
+                sentence differently from English. */}
             <p className="mt-4 text-[13px] leading-6 text-mist/70">
-              Sell the whole {quantity.toLocaleString('en-US')} pcs at {usd(retailPrice)} and you keep{' '}
-              <span className="font-bold text-shell">{usd(r.profit)}</span> ({mad(r.profit * fx)}).
+              {(() => {
+                const [before, after = ''] = fill(c.profitLine, {
+                  qty: plain(quantity),
+                  price: usd(retailPrice),
+                  mad: mad(r.profit * fx),
+                }).split('{profit}');
+                return (
+                  <>
+                    {before}
+                    <span className="font-bold text-shell">{usd(r.profit)}</span>
+                    {after}
+                  </>
+                );
+              })()}
             </p>
           </div>
 
           {/* Left-aligned on purpose: the floating WhatsApp launcher owns the
               bottom-right of the viewport, and this card's foot lands there. */}
           <div className="flex items-center gap-2 border-t border-white/10 px-6 py-4 font-mono text-[10px] uppercase tracking-[0.14em] text-mist/60 sm:px-8">
-            <label htmlFor="fx-rate">USD → MAD</label>
+            <label htmlFor="fx-rate">{c.fxLabel}</label>
             <input
               id="fx-rate"
               type="number"
@@ -428,22 +486,22 @@ export function LandedCostCalculator() {
               className="w-[64px] rounded-lg border border-white/15 bg-white/5 px-2 py-1 text-right font-mono text-[11px]
                          text-shell outline-none transition duration-300 focus:border-sky
                          [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
+              dir="ltr"
             />
           </div>
         </div>
 
         <p className="mt-4 px-1 text-[11.5px] leading-5 text-deep/55">
-          Indicative only. Real duty depends on your HS code and origin certificate, and freight is quoted on actual
-          carton dimensions.{' '}
+          {c.disclaimerA}{' '}
           <Link
             to="/start"
             className="inline-flex items-center gap-1 font-semibold text-sea underline decoration-sea/30 underline-offset-2 transition duration-300 hover:decoration-sea"
             data-testid="link-calc-quote"
           >
-            Send us the brief
-            <ArrowUpRight size={12} />
+            {c.disclaimerLink}
+            <ArrowUpRight size={12} className="rtl:rotate-[-90deg]" />
           </Link>{' '}
-          and we come back with the real number, itemised.
+          {c.disclaimerB}
         </p>
       </div>
     </div>

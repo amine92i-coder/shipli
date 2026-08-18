@@ -87,6 +87,68 @@
   }
 }
 
+/*
+ * Arabic corrections.
+ *
+ * Almost all of the mirroring is handled inline by logical Tailwind utilities
+ * (ps-/pe-, start-/end-, text-start), which keeps the direction sitting next to
+ * the layout it affects. What is left here is the part that cannot be expressed
+ * as a utility: the typography, which is not mirrored so much as differently
+ * shaped.
+ */
+[dir='rtl'] {
+  /*
+   * Arabic is cursive — letters join into a word the way handwriting does.
+   * Letter-spacing prises those joins apart, so .eyebrow's 0.22em does not make
+   * Arabic look airy, it makes "من نحن" render as loose disconnected glyphs
+   * that no longer read as words. The negative tracking on .display is the same
+   * problem from the other side: it collapses the joins into a smear.
+   *
+   * The reset has to be blanket and it has to be !important, because the
+   * tracking is applied by a hundred inline Tailwind utilities on individual
+   * elements, and an inherited value would lose to every one of them. The cost
+   * is that Latin runs inside an Arabic page (SHIPLI, DDP, an email address)
+   * also lose their tracking, which is a far smaller price than unreadable
+   * Arabic.
+   */
+  letter-spacing: normal !important;
+}
+
+[dir='rtl'] * {
+  letter-spacing: normal !important;
+}
+
+[dir='rtl'] .display {
+  /*
+   * 0.92 is a Latin display leading — it works because Manrope's caps have
+   * almost nothing above them. Arabic stacks dots and diacritics above the
+   * baseline and descends well below it, so at 0.92 consecutive lines collide
+   * and the dots of one line land inside the loops of the next.
+   */
+  line-height: 1.32;
+}
+
+[dir='rtl'] .eyebrow {
+  /*
+   * Arabic has no case, so `uppercase` is a no-op on the Arabic glyphs but
+   * still shouts at any Latin acronym caught in the same label. Dropping it
+   * keeps a mixed eyebrow evenly weighted. The size goes up a touch because
+   * Arabic carries its meaning in small marks that vanish at 10px.
+   */
+  text-transform: none;
+  font-size: 11px;
+}
+
+[dir='rtl'] .animate-marquee {
+  /*
+   * The logo strip should travel with the reading direction. The keyframes
+   * translate the doubled list leftwards, which sends new logos in from the
+   * right — correct in English, backwards in Arabic. Reversing the animation
+   * runs the same loop the other way rather than needing a second keyframe set.
+   */
+  animation-direction: reverse;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

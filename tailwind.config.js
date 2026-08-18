@@ -17,8 +17,12 @@ export default {
         kelp: '#1FA890',
       },
       fontFamily: {
-        sans: ['Manrope', 'system-ui', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        // Cairo sits behind the Latin faces, not beside them. CSS resolves a
+        // font stack per glyph, so Latin keeps landing on Manrope / JetBrains
+        // and only Arabic falls through to Cairo — one stack, all three
+        // languages, no conditional class. See the note in index.html.
+        sans: ['Manrope', 'Cairo', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'Cairo', 'ui-monospace', 'monospace'],
       },
       maxWidth: {
         shell: '1280px',
