@@ -1,10 +1,27 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, Check } from 'lucide-react';
 import { HIGHLIGHTS } from '@/data/content';
-import { PageHeader, Reveal, SectionLabel } from '@/components/ui';
+import { Icon, PageHeader, Reveal, SectionLabel } from '@/components/ui';
 import { Presence } from '@/components/sections/Presence';
 import { Cta } from '@/components/sections/Cta';
 import { useT } from '@/i18n/LangContext';
+
+/**
+ * Five cards over a six-column grid: thirds, then halves. Six is the smallest
+ * count that divides both ways, which is what keeps the fifth card from
+ * standing alone in a row of four. The last card also spans both columns at
+ * `sm`, where a 2-2-1 stack leaves the same widow.
+ *
+ * Positional, like every other array on this page — index 4 here is index 4 in
+ * HIGHLIGHTS and in `t.about.highlights`.
+ */
+const HIGHLIGHT_SPAN = [
+  'lg:col-span-2',
+  'lg:col-span-2',
+  'lg:col-span-2',
+  'lg:col-span-3',
+  'sm:col-span-2 lg:col-span-3',
+];
 
 export default function About() {
   const t = useT();
@@ -56,13 +73,15 @@ export default function About() {
             <SectionLabel>{t.about.highlightsLabel}</SectionLabel>
             <h2 className="display mt-4 max-w-2xl text-4xl text-abyss sm:text-5xl">{t.about.highlightsTitle}</h2>
           </Reveal>
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
             {HIGHLIGHTS.map((item, index) => (
-              <Reveal key={item.value} delay={index * 0.07}>
-                <div className="h-full rounded-3xl bg-white p-7 transition duration-500 hover:-translate-y-1.5">
-                  {/* Numeral, not prose — the same in all three languages. */}
-                  <p className="display text-5xl text-sea">{item.value}</p>
-                  <h3 className="mt-5 text-base font-bold tracking-tight text-abyss">
+              <Reveal key={item.id} delay={index * 0.07} className={HIGHLIGHT_SPAN[index]}>
+                <div className="group h-full rounded-3xl bg-white p-7 transition duration-500 hover:-translate-y-1.5">
+                  {/* An icon, not a numeral — see HIGHLIGHTS in data/content.ts. */}
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-foam text-sea transition duration-300 group-hover:bg-sea group-hover:text-white">
+                    <Icon name={item.icon} size={19} />
+                  </span>
+                  <h3 className="mt-6 text-base font-bold tracking-tight text-abyss">
                     {t.about.highlights[index].title}
                   </h3>
                   <p className="mt-3 text-sm leading-6 text-deep/70">{t.about.highlights[index].body}</p>

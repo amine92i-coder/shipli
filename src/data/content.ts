@@ -42,7 +42,7 @@ export const NAV: {
       {
         label: 'Business highlights',
         to: '/about#highlights',
-        blurb: 'The numbers and milestones behind five years of Morocco–China trade.',
+        blurb: 'The entities, service lines and partners that make full control real.',
       },
       {
         label: 'Our strategy',
@@ -306,26 +306,46 @@ export const GALLERY = [
   { src: '/images/gallery/gallery-16.jpg', caption: 'Supplier meeting at the trade fair', w: 1200, h: 1600 },
 ] as const;
 
+/**
+ * The five facts behind the corridor claim.
+ *
+ * There is no `value` field any more. These cards used to lead with a big
+ * numeral, which only works when every item HAS a number — three of these five
+ * do not, and the two that do carry it inside the title ("2 legal entities"),
+ * which is where it belongs and where it can be translated. A numeral column
+ * with three blanks in it is worse than no numeral column, so the card leads
+ * with an icon instead. Hence `icon` where `value` used to be.
+ */
 export const HIGHLIGHTS = [
   {
-    value: '5+',
-    title: 'Years of trusted trade',
-    body: 'Five years moving goods between Chinese factories and Moroccan businesses, without a single order handed to a broker.',
+    id: 'chain',
+    title: 'Full chain',
+    body: 'Sourcing, contracts, customs, freight and delivery, all handled directly. No step handed to a broker.',
+    icon: 'waypoints',
   },
   {
-    value: '2',
-    title: 'Legal entities, two jurisdictions',
-    body: 'A Moroccan company that contracts with you and a Chinese company that contracts with the factory — the only structure enforceable on both ends.',
+    id: 'entities',
+    title: '2 legal entities',
+    body: 'A Moroccan company that contracts with you, and a Chinese company that contracts with the factory — the only structure enforceable on both ends.',
+    icon: 'scale',
   },
   {
-    value: '6',
-    title: 'Service lines under one roof',
-    body: 'Sourcing, freight, customs, DDP, branding and company formation, all delivered by SHIPLI teams rather than subcontractors.',
+    id: 'lines',
+    title: '6 service lines under one roof',
+    body: 'Sourcing, freight, customs, DDP, branding and company formation, all delivered by SHIPLI teams, not subcontractors.',
+    icon: 'building',
   },
   {
-    value: '7',
+    id: 'partners',
     title: 'Named partners and carriers',
     body: 'From MSC and China Cargo Airlines to manufacturers such as RONGTA and WEIRONG, plus a presence at WAM and GITEX Africa Morocco.',
+    icon: 'ship',
+  },
+  {
+    id: 'market',
+    title: 'Market control, by design',
+    body: 'Every client works with pricing built to let them control their local market, not just fill an order.',
+    icon: 'trend',
   },
 ] as const;
 

@@ -41,7 +41,7 @@ export const en = {
         children: [
           {
             label: 'Business highlights',
-            blurb: 'The numbers and milestones behind five years of Morocco–China trade.',
+            blurb: 'The entities, service lines and partners that make full control real.',
           },
           { label: 'Our strategy', blurb: 'Why we own every link of the chain instead of brokering it.' },
           { label: 'Management philosophy', blurb: 'How we make decisions when your money is in transit.' },
@@ -346,23 +346,27 @@ export const en = {
     photoKicker: 'SHIPLI · Morocco & China',
     photoCaption: 'Two teams, one accountability.',
     highlightsLabel: 'Business highlights',
-    highlightsTitle: 'What five years on the corridor adds up to',
+    highlightsTitle: 'What full control of the corridor actually means',
     highlights: [
       {
-        title: 'Years of trusted trade',
-        body: 'Five years moving goods between Chinese factories and Moroccan businesses, without a single order handed to a broker.',
+        title: 'Full chain',
+        body: 'Sourcing, contracts, customs, freight and delivery, all handled directly. No step handed to a broker.',
       },
       {
-        title: 'Legal entities, two jurisdictions',
-        body: 'A Moroccan company that contracts with you and a Chinese company that contracts with the factory — the only structure enforceable on both ends.',
+        title: '2 legal entities',
+        body: 'A Moroccan company that contracts with you, and a Chinese company that contracts with the factory — the only structure enforceable on both ends.',
       },
       {
-        title: 'Service lines under one roof',
-        body: 'Sourcing, freight, customs, DDP, branding and company formation, all delivered by SHIPLI teams rather than subcontractors.',
+        title: '6 service lines under one roof',
+        body: 'Sourcing, freight, customs, DDP, branding and company formation, all delivered by SHIPLI teams, not subcontractors.',
       },
       {
         title: 'Named partners and carriers',
         body: 'From MSC and China Cargo Airlines to manufacturers such as RONGTA and WEIRONG, plus a presence at WAM and GITEX Africa Morocco.',
+      },
+      {
+        title: 'Market control, by design',
+        body: 'Every client works with pricing built to let them control their local market, not just fill an order.',
       },
     ],
     strategyLabel: 'Our strategy',

@@ -10,7 +10,9 @@ import {
   Package,
   Scale,
   Ship,
+  TrendingUp,
   Truck,
+  Waypoints,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -25,6 +27,8 @@ const ICONS: Record<string, LucideIcon> = {
   badge: BadgeCheck,
   package: Package,
   building: Building2,
+  waypoints: Waypoints,
+  trend: TrendingUp,
 };
 
 export function Icon({ name, size = 18, className }: { name: string; size?: number; className?: string }) {

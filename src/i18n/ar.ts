@@ -36,7 +36,7 @@ export const ar: Content = {
         children: [
           {
             label: 'أبرز الإنجازات',
-            blurb: 'الأرقام والمحطات وراء خمس سنوات من التجارة بين المغرب والصين.',
+            blurb: 'الكيانات وخطوط الخدمة والشركاء الذين يجعلون التحكم الكامل واقعاً.',
           },
           { label: 'استراتيجيتنا', blurb: 'لماذا نملك كل حلقة في السلسلة بدل أن نسندها لوسيط.' },
           { label: 'فلسفة التسيير', blurb: 'كيف نقرّر وأموالكم في الطريق.' },
@@ -339,23 +339,35 @@ export const ar: Content = {
     photoKicker: 'SHIPLI · المغرب والصين',
     photoCaption: 'فريقان، ومسؤولية واحدة.',
     highlightsLabel: 'أبرز الإنجازات',
-    highlightsTitle: 'حصيلة خمس سنوات على هذا المحور',
+    highlightsTitle: 'ما يعنيه التحكم الكامل في هذا المحور فعلياً',
+    // العددان مكتوبان بالحروف لا بالأرقام: العربية تحمل «اثنين» في صيغة المثنى
+    // نفسها، فكتابة الرقم إلى جانبها تكرار.
+    //
+    // NOTE for non-Arabic readers: the conjunction و normally attaches to the
+    // next word with no space ("والشحن"). Before a LATIN word that breaks: bidi
+    // reordering lands the و against the RIGHT edge of the Latin run, so
+    // "وChina Cargo Airlines" renders as "China Cargo Airlinesو" and reads like
+    // a typo. So و gets a space when — and only when — a Latin word follows.
     highlights: [
       {
-        title: 'سنوات من التجارة الموثوقة',
-        body: 'خمس سنوات من نقل البضائع بين المصانع الصينية والمقاولات المغربية، دون تسليم طلبية واحدة إلى وسيط.',
+        title: 'السلسلة كاملة',
+        body: 'التوريد والعقود والجمارك والشحن والتسليم، كلها تُدار مباشرة. ولا خطوة واحدة تُسند إلى وسيط.',
       },
       {
-        title: 'كيانان قانونيان في نظامين قضائيين',
-        body: 'شركة مغربية تتعاقد معكم وشركة صينية تتعاقد مع المصنع — الهيكل الوحيد القابل للتنفيذ في الطرفين.',
+        title: 'كيانان قانونيان',
+        body: 'شركة مغربية تتعاقد معكم، وشركة صينية تتعاقد مع المصنع — الهيكل الوحيد القابل للتنفيذ في الطرفين.',
       },
       {
-        title: 'خطوط خدمة تحت سقف واحد',
-        body: 'التوريد والشحن والجمارك وDDP والعلامة التجارية وتأسيس الشركات، كلها تنجزها فرق SHIPLI لا مقاولون من الباطن.',
+        title: 'ست خطوط خدمة تحت سقف واحد',
+        body: 'التوريد والشحن والجمارك و DDP والعلامة التجارية وتأسيس الشركات، كلها تنجزها فرق SHIPLI لا مقاولون من الباطن.',
       },
       {
         title: 'شركاء وناقلون بالاسم',
-        body: 'من MSC وChina Cargo Airlines إلى مصنّعين مثل RONGTA وWEIRONG، إضافة إلى حضورنا في WAM وGITEX Africa Morocco.',
+        body: 'من MSC و China Cargo Airlines إلى مصنّعين مثل RONGTA و WEIRONG، إضافة إلى حضورنا في WAM و GITEX Africa Morocco.',
+      },
+      {
+        title: 'التحكم في السوق، بالتصميم',
+        body: 'كل عميل يعمل بتسعير مصمَّم ليمنحه التحكم في سوقه المحلية، لا أن ينفّذ طلبية فحسب.',
       },
     ],
     strategyLabel: 'استراتيجيتنا',

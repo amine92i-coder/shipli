@@ -28,8 +28,8 @@ export const fr: Content = {
         label: 'À propos',
         children: [
           {
-            label: 'Chiffres clés',
-            blurb: 'Les chiffres et les étapes de cinq années de commerce Maroc–Chine.',
+            label: 'Points clés',
+            blurb: 'Les entités, lignes de service et partenaires qui rendent le contrôle total réel.',
           },
           { label: 'Notre stratégie', blurb: 'Pourquoi nous maîtrisons chaque maillon au lieu de le sous-traiter.' },
           { label: 'Philosophie de gestion', blurb: 'Comment nous décidons quand votre argent est en transit.' },
@@ -331,24 +331,30 @@ export const fr: Content = {
     photoAlt: 'Un acheteur SHIPLI avec un fournisseur chinois sur un parc de machines',
     photoKicker: 'SHIPLI · Maroc et Chine',
     photoCaption: 'Deux équipes, une seule responsabilité.',
-    highlightsLabel: 'Chiffres clés',
-    highlightsTitle: 'Ce que cinq ans sur le corridor représentent',
+    // « Chiffres clés » ne tient plus : trois de ces cinq points n’ont pas de
+    // chiffre depuis la réécriture.
+    highlightsLabel: 'Points clés',
+    highlightsTitle: 'Ce que le contrôle total du corridor signifie vraiment',
     highlights: [
       {
-        title: 'Années de commerce de confiance',
-        body: 'Cinq années à déplacer des marchandises entre usines chinoises et entreprises marocaines, sans une seule commande confiée à un courtier.',
+        title: 'Chaîne complète',
+        body: 'Sourcing, contrats, douane, fret et livraison, tout est pris en charge directement. Aucune étape confiée à un courtier.',
       },
       {
-        title: 'Entités juridiques, deux juridictions',
-        body: 'Une société marocaine qui contracte avec vous et une société chinoise qui contracte avec l’usine — la seule structure exécutoire des deux côtés.',
+        title: '2 entités juridiques',
+        body: 'Une société marocaine qui contracte avec vous, et une société chinoise qui contracte avec l’usine — la seule structure exécutoire des deux côtés.',
       },
       {
-        title: 'Lignes de service sous un même toit',
-        body: 'Sourcing, fret, douane, DDP, marque et création de société, tout assuré par les équipes SHIPLI plutôt que par des sous-traitants.',
+        title: '6 lignes de service sous un même toit',
+        body: 'Sourcing, fret, douane, DDP, marque et création de société, tout assuré par les équipes SHIPLI, pas par des sous-traitants.',
       },
       {
         title: 'Partenaires et transporteurs référencés',
         body: 'De MSC et China Cargo Airlines à des fabricants comme RONGTA et WEIRONG, avec une présence à WAM et GITEX Africa Morocco.',
+      },
+      {
+        title: 'Maîtrise du marché, par conception',
+        body: 'Chaque client bénéficie d’une tarification conçue pour lui permettre de contrôler son marché local, pas seulement d’exécuter une commande.',
       },
     ],
     strategyLabel: 'Notre stratégie',
