@@ -119,28 +119,32 @@ const WIDE_SPEC: Spec = {
   // -120 offset exactly; any other cycle length visibly hiccups each loop.
   sea: { width: 2.6, dash: '10 14' },
   air: { width: 2, dash: '5 19' },
-  // Both sit in the deep pocket of open water south-east of China, between the
-  // sea lane's first descent and the frame's bottom edge — the largest clear
-  // area in the frame, and the only one big enough for two plates this size.
-  // Verified with scripts/bubble-fit.mjs: goods clears land by 102 units, the
-  // sea lane by 28 and the frame edge by 81; papers by 233, 25 and 47.
+  // Both tuck into the small pocket of water immediately south-east of the
+  // Ningbo beacon, and both tails aim back at it. They used to be roughly a
+  // third of China's width and sat far out in the open water toward the bottom
+  // of the frame; at that size and distance they stopped reading as something
+  // China was thinking and started reading as two more objects in the scene,
+  // competing with the ship. Now they are ~13% and ~15% of China's 481-unit
+  // width, which is the proportion the reference art uses, and they sit close
+  // enough to the beacon that the tails are short.
   //
-  // Unequal sizes on purpose. The pocket narrows going west, so the western
-  // plate has to be smaller anyway, and the near/far pair reads as depth rather
-  // than as two labels.
+  // The trade is legibility: at 72 units the certificate's heading is no longer
+  // readable, only its shape, the gold stamp and the green tick. That is the
+  // point of the reference composition — the bubble is a glyph, not a document
+  // viewer — but it is a real loss and worth knowing before shrinking further.
   //
-  // The CERTIFICATE gets the big plate and the carton the small one, which is
-  // the opposite of what the story's order suggests. A carton is legible as a
-  // silhouette at any size; a sheet of paper is only a sheet of paper once you
-  // can make out a heading, a stamp and a green tick on it. Size goes where it
-  // buys something. It also puts the inspection nearest the factory, which is
-  // where it actually happens.
+  // Verified with scripts/bubble-fit.mjs (land / sea lane / air lane / edge):
+  // goods 64 / 64 / 77 / 57, papers 77 / 50 / 117 / 99.
+  //
+  // The CERTIFICATE still gets the bigger plate and the carton the smaller one.
+  // A carton is legible as a silhouette at any size; a sheet of paper needs
+  // every unit it can get. Size goes where it buys something.
   thoughts: {
-    // Straight up the frame at Ningbo, which is almost directly overhead.
-    papers: { x: 1440, y: 552, size: 158, tail: -92 },
-    // Up-RIGHT, back along the lane toward the same beacon. The dots stop 69
-    // units short of the papers plate.
-    goods: { x: 1248, y: 668, size: 130, tail: -64 },
+    // Below-left of the goods plate, tail up-and-left at the beacon. The dots
+    // stop at x1455, twenty-six units short of the goods plate's left edge.
+    papers: { x: 1465, y: 451, size: 72, tail: -100 },
+    // Nearer the beacon and higher, tail up-and-left along the same bearing.
+    goods: { x: 1512, y: 371, size: 62, tail: -130 },
   },
   ship: { w: 50, h: 194 },
   plane: { w: 104, h: 110 },
@@ -177,13 +181,21 @@ const TALL_SPEC: Spec = {
   // above China is where the copy column lands on a short phone — on a 375x667
   // the hero copy reaches viewBox y~980, which is why nothing here sits above
   // y1060.
+  //
+  // Shrunk with the wide frame's, but NOT as far and NOT moved next to the
+  // beacon. Both would have cost more here than they buy. A sweep of the water
+  // beside China's dot fits exactly one plate of this size, not two — and the
+  // tall frame renders at about 0.43 CSS px per unit on a phone, so the wide
+  // frame's 62 units would come out 27px across, which is a smudge rather than
+  // a carton. These stay in the channel, where the room is, and earn the
+  // relationship with the beacon through their tails instead of proximity.
   thoughts: {
-    // Due east, straight at China's west coast, which at this latitude has
-    // receded well inside the bounding box.
-    papers: { x: 472, y: 1162, size: 92, tail: 0 },
-    // Up-and-east rather than due east: a level tail from here runs into the
-    // papers plate. Angled up it passes above it and still lands on China.
-    goods: { x: 348, y: 1112, size: 76, tail: -26 },
+    // Due east, straight at the beacon, which sits almost exactly level with
+    // this plate at y1164.
+    papers: { x: 462, y: 1168, size: 72, tail: 0 },
+    // Also at the beacon, which from up here is slightly DOWN and east. The
+    // dots stop at x395, thirty-one short of the papers plate.
+    goods: { x: 348, y: 1112, size: 60, tail: 7 },
   },
   ship: { w: 52, h: 202 },
   plane: { w: 92, h: 98 },
@@ -346,9 +358,13 @@ export function CrossingScene({ progress }: { progress: MotionValue<number> }) {
             <stop offset="100%" stopColor="#F2765C" stopOpacity="0" />
           </radialGradient>
           {/* Softer and shallower than landLift: a bubble is a small object
-              floating just above the water, not a continent sitting on it. */}
-          <filter id="bubbleLift" x="-40%" y="-40%" width="180%" height="180%">
-            <feDropShadow dx="0" dy="7" stdDeviation="11" floodColor="#04263B" floodOpacity="0.5" />
+              floating just above the water, not a continent sitting on it.
+
+              These are USER-SPACE units, so they do not scale with the plate.
+              Halved when the plates were halved — a 7-unit drop under a 158-unit
+              plate is a hint, the same drop under a 62-unit one is a slab. */}
+          <filter id="bubbleLift" x="-60%" y="-60%" width="220%" height="220%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#04263B" floodOpacity="0.5" />
           </filter>
           {/* Top-edge sheen. objectBoundingBox units, so one gradient serves
               plates of different sizes in both frames. */}
