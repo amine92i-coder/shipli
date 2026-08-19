@@ -142,15 +142,18 @@ export const fr: Content = {
         tag: '01 / Maroc',
         title: 'Contrat légal au Maroc',
         body: 'Avant que quoi que ce soit ne bouge, SHIPLI signe avec vous un contrat juridiquement contraignant, rédigé par nos propres avocats au Maroc. SHIPLI est responsable de votre produit et de votre argent.',
+        alt: 'Deux collaborateurs examinant ensemble le contrat client au bureau de Casablanca',
       },
       {
         tag: '02 / Chine',
         title: 'Contrat légal en Chine',
         body: 'Notre société basée en Chine signe directement avec l’usine sous droit chinois — la seule structure réellement exécutoire en Chine.',
+        alt: 'Signature avec un responsable d’usine dans une salle donnant sur l’atelier de production',
       },
     ],
     protectedTitle: 'Client protégé',
     protectedBody: 'Deux contrats. Deux pays. Une seule société derrière les deux.',
+    protectedAlt: 'Une commande terminée, palettisée et étiquetée, prête à quitter l’entrepôt',
   },
 
   presence: {

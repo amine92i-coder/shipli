@@ -155,15 +155,18 @@ export const en = {
         tag: '01 / Morocco',
         title: 'Legal contract in Morocco',
         body: 'Before anything moves, SHIPLI signs a legally binding contract with you, drafted by our own lawyers in Morocco. SHIPLI is responsible for your product and your money.',
+        alt: 'Two colleagues going through the client contract together at the Casablanca office',
       },
       {
         tag: '02 / China',
         title: 'Legal contract in China',
         body: 'Our China-based company signs directly with the factory under Chinese law — the only structure that is actually enforceable in China.',
+        alt: 'Signing with a factory manager in a meeting room overlooking the production floor',
       },
     ],
     protectedTitle: 'Protected customer',
     protectedBody: 'Two contracts. Two countries. One company standing behind both.',
+    protectedAlt: 'A finished order palletised and labelled, waiting to leave the warehouse',
   },
 
   presence: {
