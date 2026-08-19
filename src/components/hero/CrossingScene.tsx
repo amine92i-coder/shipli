@@ -42,11 +42,8 @@ type Spec = {
   coast: number;
   sea: { width: number; dash: string };
   air: { width: number; dash: string };
-  portArt: { w: number; h: number };
-  /** Container stack on the Chinese quay, and the carton pile out with the docs. */
-  crates: Box;
-  docs: Box;
-  cartons: Box;
+  /** The two thought bubbles hanging off China. */
+  thoughts: { goods: Thought; papers: Thought };
   ship: { w: number; h: number };
   plane: { w: number; h: number };
   glow: number;
@@ -70,14 +67,15 @@ type Spec = {
    * The LANE still runs port to port — that is the route, and it has to read as
    * one unbroken line. But both port anchors are real coastal coordinates
    * projected from lon/lat, and both land INSIDE their country's silhouette, so
-   * a craft driven across the full 0..1 finishes its run inland. Measured with
-   * isPointInFill against the rendered paths, the lanes cross land for:
+   * a craft driven across the full 0..1 finishes its run inland. Re-derive these
+   * with `node scripts/lane-runs.mjs` after any change to the country scales —
+   * the crossings move with them. As drawn, the lanes are over land for:
    *
    *            over China      over Morocco
-   *   wide sea  0 .. 0.06       0.92 .. 1
-   *   wide air  0 .. 0.23       0.92 .. 1
-   *   tall sea  0 .. 0.14       0.91 .. 1
-   *   tall air  0 .. 0.40       0.89 .. 1
+   *   wide sea  0 .. 0.03       0.92 .. 1
+   *   wide air  0 .. 0.21       0.91 .. 1
+   *   tall sea  0 .. 0.12       0.91 .. 1
+   *   tall air  0 .. 0.37       0.87 .. 1
    *
    * The ship is held to open water. Its centreline clearing the coast is not
    * enough — the hull is ~19% of the wide lane and ~29% of the tall one, and it
@@ -93,7 +91,19 @@ type Spec = {
   run: { sea: [number, number]; air: [number, number] };
 };
 
-type Box = { x: number; y: number; w: number; h: number };
+/**
+ * One thought bubble: a rounded plate centred on (x,y) with a side of `size`,
+ * and a tail of shrinking dots leaving it on the `tail` bearing — SVG degrees,
+ * so 0 is due east and -90 due north.
+ *
+ * The bearing is stated rather than computed from China's port anchor, which is
+ * what it mostly points at. Two bubbles both aiming at one anchor produce tails
+ * that run into each other — in the tall frame the western bubble's tail would
+ * land squarely on the eastern one, which reads as one bubble thinking about the
+ * other. Each bearing is chosen to point at China AND to leave its neighbour
+ * alone, and only a stated number can satisfy both.
+ */
+type Thought = { x: number; y: number; size: number; tail: number };
 
 const WIDE_SPEC: Spec = {
   scene: WIDE,
@@ -109,21 +119,35 @@ const WIDE_SPEC: Spec = {
   // -120 offset exactly; any other cycle length visibly hiccups each loop.
   sea: { width: 2.6, dash: '10 14' },
   air: { width: 2, dash: '5 19' },
-  portArt: { w: 170, h: 125 },
-  // Straddling the south coast, so the stack reads as a quay rather than as an
-  // object floating offshore.
-  crates: { x: 1180, y: 302, w: 146, h: 105 },
-  // Both of these live in the corridor between the two lanes, which at this end
-  // of the frame is about 137 units of clear water — the air lane is at y~490
-  // around x 800 and the sea lane at y~627. They are sized to sit inside it.
-  docs: { x: 800, y: 505, w: 126, h: 90 },
-  cartons: { x: 940, y: 520, w: 66, h: 84 },
+  // Both sit in the deep pocket of open water south-east of China, between the
+  // sea lane's first descent and the frame's bottom edge — the largest clear
+  // area in the frame, and the only one big enough for two plates this size.
+  // Verified with scripts/bubble-fit.mjs: goods clears land by 102 units, the
+  // sea lane by 28 and the frame edge by 81; papers by 233, 25 and 47.
+  //
+  // Unequal sizes on purpose. The pocket narrows going west, so the western
+  // plate has to be smaller anyway, and the near/far pair reads as depth rather
+  // than as two labels.
+  //
+  // The CERTIFICATE gets the big plate and the carton the small one, which is
+  // the opposite of what the story's order suggests. A carton is legible as a
+  // silhouette at any size; a sheet of paper is only a sheet of paper once you
+  // can make out a heading, a stamp and a green tick on it. Size goes where it
+  // buys something. It also puts the inspection nearest the factory, which is
+  // where it actually happens.
+  thoughts: {
+    // Straight up the frame at Ningbo, which is almost directly overhead.
+    papers: { x: 1440, y: 552, size: 158, tail: -92 },
+    // Up-RIGHT, back along the lane toward the same beacon. The dots stop 69
+    // units short of the papers plate.
+    goods: { x: 1248, y: 668, size: 130, tail: -64 },
+  },
   ship: { w: 50, h: 194 },
   plane: { w: 104, h: 110 },
   glow: 76,
   dot: { r: 7, ring: 14 },
-  emblem: { china: { x: 1328, y: 251, s: 12 }, morocco: { x: 575, y: 592, r: 26 } },
-  // Hull is 194 of a 1046-unit lane. Ending at 0.84 puts the bow at ~0.93 —
+  emblem: { china: { x: 1328.6, y: 249.6, s: 10.7 }, morocco: { x: 579.1, y: 579.4, r: 29 } },
+  // Hull is 194 of a 1038-unit lane. Ending at 0.84 puts the bow at ~0.93 —
   // just onto the Moroccan coast, which is where a ship arriving should be.
   run: { sea: [0.04, 0.84], air: [0.03, 0.96] },
 };
@@ -141,22 +165,31 @@ const TALL_SPEC: Spec = {
   // unreadable dotted line at the tall frame's much smaller on-screen unit.
   sea: { width: 4, dash: '16 24' },
   air: { width: 3.2, dash: '8 32' },
-  portArt: { w: 108, h: 80 },
-  crates: { x: 606, y: 1178, w: 97, h: 70 },
-  // Both go in the CHANNEL between the two countries, in the band of water
-  // between the air lane's crest (~y1030 here) and the sea lane's belly
-  // (~y1260). The docs used to sit at y918, above the air lane — which is open
-  // water in the scene but is also where the copy column ends on a phone, and
-  // on a 390x844 the paperwork landed on top of the assurance line. The scene
-  // owns the bottom of the tall frame; the copy owns the top; nothing of either
-  // belongs in the other's half.
-  docs: { x: 248, y: 1092, w: 96, h: 68 },
-  cartons: { x: 372, y: 1150, w: 55, h: 70 },
+  // The tall frame has no pocket like the wide one's — the two countries sit
+  // side by side along the bottom, so the only clear water near China is the
+  // CHANNEL between them, about 190 units deep between the air lane's crest
+  // (~y1050) and the sea lane's belly (~y1250). Two plates go in it
+  // diagonally, which is the one arrangement that fits: side by side they have
+  // no room to breathe, and stacked they do not fit at all.
+  //
+  // Everything above the channel is off limits, however open the water looks.
+  // scripts/bubble-fit.mjs measures the scene, not the page, and the strip
+  // above China is where the copy column lands on a short phone — on a 375x667
+  // the hero copy reaches viewBox y~980, which is why nothing here sits above
+  // y1060.
+  thoughts: {
+    // Due east, straight at China's west coast, which at this latitude has
+    // receded well inside the bounding box.
+    papers: { x: 472, y: 1162, size: 92, tail: 0 },
+    // Up-and-east rather than due east: a level tail from here runs into the
+    // papers plate. Angled up it passes above it and still lands on China.
+    goods: { x: 348, y: 1112, size: 76, tail: -26 },
+  },
   ship: { w: 52, h: 202 },
   plane: { w: 92, h: 98 },
   glow: 58,
   dot: { r: 10, ring: 20 },
-  emblem: { china: { x: 692, y: 1144, s: 7.5 }, morocco: { x: 167, y: 1116, r: 23 } },
+  emblem: { china: { x: 694.4, y: 1145.5, s: 6.75 }, morocco: { x: 169.9, y: 1105.8, r: 25.5 } },
   // Tighter at both ends than the wide frame: the hull is 202 of a 690-unit
   // lane here, nearly a third of it, and the channel between the two countries
   // is the only water there is.
@@ -168,9 +201,10 @@ const AIR_SECONDS = 21;
 /** The plane waits out part of each cycle so both craft aren't always in frame. */
 const AIR_DUTY = 0.62;
 /**
- * Both lanes start at Ningbo, which is also where the port complex is drawn —
- * so at phase 0 the ship and plane are hidden under it and the first paint
- * shows an empty ocean. Start them already under way, out in open water.
+ * Both lanes start at Ningbo, which is also where the beacon and its 76-unit
+ * glow are drawn — so at phase 0 the ship and plane sit on top of the dot, and
+ * edgeFade has them at zero opacity besides, making the first paint an empty
+ * ocean. Start them already under way, out in open water.
  */
 const SEA_PHASE = 0.38;
 const AIR_PHASE = 0.22;
@@ -311,6 +345,17 @@ export function CrossingScene({ progress }: { progress: MotionValue<number> }) {
             <stop offset="0%" stopColor="#F2765C" stopOpacity="0.55" />
             <stop offset="100%" stopColor="#F2765C" stopOpacity="0" />
           </radialGradient>
+          {/* Softer and shallower than landLift: a bubble is a small object
+              floating just above the water, not a continent sitting on it. */}
+          <filter id="bubbleLift" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="0" dy="7" stdDeviation="11" floodColor="#04263B" floodOpacity="0.5" />
+          </filter>
+          {/* Top-edge sheen. objectBoundingBox units, so one gradient serves
+              plates of different sizes in both frames. */}
+          <linearGradient id="bubbleSheen" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.13" />
+            <stop offset="60%" stopColor="#FFFFFF" stopOpacity="0" />
+          </linearGradient>
         </defs>
 
         {/* --- land ---------------------------------------------------------
@@ -397,36 +442,26 @@ export function CrossingScene({ progress }: { progress: MotionValue<number> }) {
           strokeDasharray={spec.air.dash} strokeLinecap="round" opacity="0.4"
           className="animate-dash [animation-duration:6s]" />
 
-        {/* --- the works ----------------------------------------------------
-            The port and its container stack sit on China's coast where the
-            goods are made and loaded; the paperwork and the cartons float over
-            open water because that is precisely where they happen — between the
-            two countries, and not on the client's desk.
+        {/* --- what China is thinking ---------------------------------------
+            Two thought bubbles hanging off China: the goods, and the paperwork
+            that proves them. They replace a painted port complex and a stack of
+            containers that used to sit on the coast — literal cargo drawn as
+            scenery, which said "there is a factory over there" and nothing more.
 
-            The complex is sized to read as a working port ON the coast, not as a
-            second landmass, and seated up-and-left of the anchor so it straddles
-            the coastline while leaving the lanes' first descent in clear water. */}
-        <image href="/images/hero/crates.png" {...box(spec.crates)} opacity="0.94" />
-        <image href="/images/hero/port.png"
-          x={scene.china.port.x - spec.portArt.w * 0.79} y={scene.china.port.y - spec.portArt.h * 0.76}
-          width={spec.portArt.w} height={spec.portArt.h} opacity="0.95" />
-        {/* Nested so the two loops run at different periods — the paper rises
-            and settles on one clock while tilting on another, which never
-            quite repeats and reads as floating rather than as a loop. The
-            cartons drift on a third clock so the pair never move as one block. */}
-        <g className="animate-drift [animation-duration:11s]">
-          {/* Held at 0.72 and kept small. The paper is near-white, so at full
-              strength it becomes the brightest object in the frame and pulls the
-              eye off the headline — it is a supporting detail, not the subject. */}
-          <image href="/images/hero/docs.png" {...box(spec.docs)} opacity="0.72"
-            className="animate-sway [animation-duration:7s]"
-            style={{ transformBox: 'fill-box', transformOrigin: 'center' }} />
-        </g>
-        <g className="animate-drift [animation-duration:14s]">
-          <image href="/images/hero/cartons.png" {...box(spec.cartons)} opacity="0.85"
-            className="animate-sway [animation-duration:9s]"
-            style={{ transformBox: 'fill-box', transformOrigin: 'center' }} />
-        </g>
+            A thought bubble says something the scenery could not: that what
+            China holds is not a building but an ORDER, and that the inspection
+            certificate is part of the order rather than an afterthought. It is
+            also the one device that can put a legible document in a hero at all
+            — a sheet of A4 lying in open water is a prop, the same sheet inside
+            a bubble is a subject, and only the second survives being 130 units
+            wide.
+
+            Different drift periods, and neither is a multiple of the other, so
+            the pair never settles into moving as one block. */}
+        <Bubble t={spec.thoughts.papers} href="/images/hero/bubble-doc.png"
+          className="animate-drift [animation-duration:11s]" />
+        <Bubble t={spec.thoughts.goods} href="/images/hero/bubble-box.png"
+          className="animate-drift [animation-duration:14s]" />
 
         {/* --- craft -------------------------------------------------------- */}
         {/* Drawn about their own origin so place() only has to translate and
@@ -478,7 +513,77 @@ function plate({ box: b }: Country, slack: number) {
   return { x: b.x - slack, y: b.y - slack, width: b.w + slack * 2, height: b.h + slack * 2 };
 }
 
-const box = ({ x, y, w, h }: Box) => ({ x, y, width: w, height: h });
+/**
+ * A thought bubble: a rounded plate with the prop inside, and two shrinking dots
+ * trailing off toward whatever is thinking it.
+ *
+ * Every measurement is a FRACTION OF `size` rather than a number, so one
+ * component serves a 158-unit plate in the wide frame and a 76-unit one in the
+ * tall frame and both look like the same object. Absolute values here would need
+ * a second set in the spec for no gain.
+ *
+ * The dots trail the plate in the DOM so the plate's shadow falls over them, not
+ * under them — a dot lit from the same angle as the thing it hangs off reads as
+ * detached from it.
+ */
+function Bubble({ t, href, className }: { t: Thought; href: string; className: string }) {
+  const half = t.size / 2;
+  const rad = (t.tail * Math.PI) / 180;
+  // Both dots start OUTSIDE the plate (0.5 is its edge) and shrink as they go,
+  // which is what separates a thought bubble from a speech balloon's single
+  // pointer. Kept short: a long tail crosses a lane sooner or later.
+  const dots = [
+    { at: 0.6, r: 0.085 },
+    { at: 0.78, r: 0.048 },
+  ];
+  // The prop sits in a square well inside the plate. Both props were padded to
+  // 1:1 when they were cut out, so <image>'s default "meet" fills this exactly
+  // and neither is letterboxed against the other's proportions.
+  //
+  // A tenth, not the sixth a card would use. These plates are ~140px on a
+  // desktop and the certificate has to survive being that small — every unit of
+  // padding is a unit taken off the only thing in the bubble worth looking at.
+  const pad = t.size * 0.1;
+
+  return (
+    <g className={className} filter="url(#bubbleLift)">
+      {dots.map(({ at, r }) => (
+        <circle
+          key={at}
+          cx={t.x + Math.cos(rad) * t.size * at}
+          cy={t.y + Math.sin(rad) * t.size * at}
+          r={t.size * r}
+          fill={BUBBLE_FILL}
+          fillOpacity="0.92"
+          stroke={BUBBLE_RIM}
+          strokeOpacity={RIM_ALPHA}
+          strokeWidth={t.size * 0.014}
+        />
+      ))}
+      <rect x={t.x - half} y={t.y - half} width={t.size} height={t.size} rx={t.size * 0.22}
+        fill={BUBBLE_FILL} fillOpacity="0.94" stroke={BUBBLE_RIM} strokeOpacity={RIM_ALPHA}
+        strokeWidth={t.size * 0.014} />
+      <rect x={t.x - half} y={t.y - half} width={t.size} height={t.size} rx={t.size * 0.22}
+        fill="url(#bubbleSheen)" />
+      <image href={href} x={t.x - half + pad} y={t.y - half + pad}
+        width={t.size - pad * 2} height={t.size - pad * 2} />
+    </g>
+  );
+}
+
+/**
+ * A shade off `abyss`, not a match for it. The ocean carries a 40% abyss scrim
+ * already, so a plate in the section's own darkest colour has nothing to
+ * separate it from the water it is supposed to be floating above — but going
+ * far the other way turns it into a grey card, and the whole job of the plate is
+ * to be the unlit thing that throws a kraft carton and a white certificate
+ * forward.
+ */
+const BUBBLE_FILL = '#072335';
+/** The rim is a hairline, not an outline — enough to catch the edge, not enough
+ *  to draw a cyan box around the one thing that should read as unlit. */
+const BUBBLE_RIM = '#5EC2E8';
+const RIM_ALPHA = 0.3;
 
 /* --- flags ------------------------------------------------------------------
  * Both emblems are drawn here rather than fetched or generated. They are exact

@@ -81,24 +81,31 @@ const SUBJECTS = {
     // WIDE cy is what pins Morocco's SOUTH edge near the frame's bottom while
     // its north coast clears the copy block. The copy no longer floats with the
     // section height — it is pinned under the header — so the one number that
-    // has to hold is Morocco's box TOP, at 528 of 780 here.
-    wide: { scale: 16, cx: 542, cy: 646 },
-    tall: { scale: 14, cx: 138, cy: 1163 },
+    // has to hold is Morocco's box TOP, at 507 of 780 here. Its south edge lands
+    // at 773, seven units off the frame's bottom, which is the real ceiling on
+    // this scale: the next step up runs Western Sahara off the frame.
+    wide: { scale: 18, cx: 542, cy: 640 },
+    tall: { scale: 15.5, cx: 138, cy: 1158 },
     port: { lon: -7.62, lat: 33.59, name: 'Casablanca' },
   },
   china: {
     names: ['China'],
-    // Lifted hard: the box now starts 22 units off the top of the frame rather
-    // than 179 of 900. "Bigger and toward the top" is one move here — the extra
-    // scale has to go somewhere, and the only clear space is upward, since the
-    // sea lane needs the water below China to leave Ningbo and turn west.
-    wide: { scale: 11, cx: 1296, cy: 205 },
+    // Deliberately the one country that got SMALLER. Morocco is the client's
+    // country and was reading as the junior partner at four times less area; the
+    // two were moved toward each other from both ends rather than by inflating
+    // Morocco alone, which at these scales would have run it off the frame.
+    //
+    // The wide box goes 540x365 -> 481x325 and its south coast lifts to y372 of
+    // 780. That is also what opens the pocket of water south-east of China that
+    // both thought bubbles now sit in — see WIDE_SPEC.thoughts in
+    // CrossingScene.tsx, and re-run scripts/bubble-fit.mjs if this moves.
+    wide: { scale: 9.8, cx: 1300, cy: 210 },
     // Portrait keeps the two side by side rather than stacked, so China's
     // budget is width, not height. The floating WhatsApp button owns the
     // bottom-right corner of every page, which used to force China left to keep
     // NINGBO's label clear; with the labels gone only a small dot is at risk, so
     // China can take the width the composition actually wants.
-    tall: { scale: 7, cx: 672, cy: 1116 },
+    tall: { scale: 6.3, cx: 676, cy: 1120 },
     port: { lon: 121.55, lat: 29.87, name: 'Ningbo' },
   },
 };
