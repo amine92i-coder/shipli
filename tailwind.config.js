@@ -51,6 +51,18 @@ export default {
           '0%': { transform: 'scale(.85)', opacity: '.7' },
           '100%': { transform: 'scale(2.4)', opacity: '0' },
         },
+        // The hero's scroll cue. Opacity moves with the offset rather than
+        // staying flat: a mark that only slides reads as something sliding, one
+        // that also brightens on the way down reads as a direction.
+        //
+        // It rests for nearly half the cycle (55%..100%) instead of bobbing
+        // continuously. A mark in perpetual motion at the bottom of a hero
+        // reads as a loading spinner, and a page that looks like it is still
+        // loading is worse than a page with no cue at all.
+        nudge: {
+          '0%,55%,100%': { transform: 'translate3d(0,0,0)', opacity: '.45' },
+          '25%': { transform: 'translate3d(0,8px,0)', opacity: '.9' },
+        },
       },
       animation: {
         drift: 'drift 7s ease-in-out infinite',
@@ -59,6 +71,7 @@ export default {
         rise: 'rise .9s cubic-bezier(.2,.7,.3,1) both',
         marquee: 'marquee 38s linear infinite',
         pulseRing: 'pulseRing 2.6s ease-out infinite',
+        nudge: 'nudge 2.8s ease-in-out infinite',
       },
     },
   },

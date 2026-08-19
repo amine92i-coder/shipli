@@ -1,5 +1,4 @@
 import { Hero } from '@/components/Hero';
-import { Partners } from '@/components/sections/Partners';
 import { VideoBlock } from '@/components/sections/VideoBlock';
 import { Advantage } from '@/components/sections/Advantage';
 import { Trust } from '@/components/sections/Trust';
@@ -13,8 +12,10 @@ import { Cta } from '@/components/sections/Cta';
 export default function Home() {
   return (
     <>
+      {/* No <Partners /> here any more — the logo marquee is now the band on
+          the hero's own bottom edge, where the fold cuts through it. See
+          components/hero/PartnerStrip.tsx. */}
       <Hero />
-      <Partners />
       <VideoBlock />
       <Advantage />
       <Trust />
